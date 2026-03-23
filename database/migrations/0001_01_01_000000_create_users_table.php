@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('is_verified')->default(0);
             $table->timestamp('last_login')->nullable();
             $table->string('reset_token', 255)->nullable();
+            $table->boolean('remember')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

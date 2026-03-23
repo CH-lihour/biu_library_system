@@ -192,8 +192,8 @@ Circles.create({
 //Notify
 $.notify({
 	icon: 'icon-bell',
-	title: 'Kaiadmin',
-	message: 'Premium Bootstrap 5 Admin Dashboard',
+	title: 'BIU	Library System',
+	message: 'BIU	Library System For Campus 1',
 },{
 	type: 'secondary',
 	placement: {

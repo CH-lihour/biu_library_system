@@ -23,8 +23,8 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Visitors</p>
-                                <h4 class="card-title">1,294</h4>
+                                <p class="card-category">Users</p>
+                                <h4 class="card-title">{{ auth()->user()->count() }}</h4>
                             </div>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Subscribers</p>
+                                <p class="card-category">Members</p>
                                 <h4 class="card-title">1303</h4>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                         </div>
                         <div class="col col-stats ms-3 ms-sm-0">
                             <div class="numbers">
-                                <p class="card-category">Order</p>
+                                <p class="card-category">Books</p>
                                 <h4 class="card-title">576</h4>
                             </div>
                         </div>
@@ -153,7 +153,7 @@
             <div class="card card-round">
                 <div class="card-body pb-0">
                     <div class="h1 fw-bold float-end text-primary">+5%</div>
-                    <h2 class="mb-2">17</h2>
+                    <h2 class="mb-2">{{ auth()->user()->count() }}</h2>
                     <p class="text-muted">Users online</p>
                     <div class="pull-in sparkline-fix">
                         <div id="lineChart"></div>
@@ -162,7 +162,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-12">
             <div class="card card-round">
                 <div class="card-header">
@@ -263,7 +263,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="row">
         <div class="col-md-4">
             <div class="card card-round">

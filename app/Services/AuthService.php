@@ -9,9 +9,9 @@ class AuthService
 {
     public function __construct(protected AuthRepositoryInterface $authRepository){}
 
-    public function login(array $credentails) :bool
+    public function login(array $credentials, bool $remember = false) : bool
     {
-        if (!Auth::attempt($credentails)) {
+        if (!Auth::attempt($credentials, $remember)) {
             return false;
         }
 
@@ -28,9 +28,9 @@ class AuthService
     public function redirectByRole(): string
     {
         return match(auth()->user()->role) {
-            'admin' => route('admin.dashboard'),
-            'librarian' => route('librarian.dashboard'),
-            'member' => route('member.dashboard'),
+            'admin' => route('dashboard'),
+            'librarian' => route('dashboard'),
+            'member' => route('dashboard'),
             default => route('dashboard'),
         };
     }

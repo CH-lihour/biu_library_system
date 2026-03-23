@@ -16,16 +16,20 @@ class LoginController extends Controller
         return view("auth.login");
     }
 
-    public function store(LoginRequest $request){
-        if(!$this->authService->login($request->only('email', 'password'))){
+    public function store(LoginRequest $request)
+    {
+        if (! $this->authService->login(
+            $request->only('email', 'password'),
+            $request->boolean('remember')
+        )) {
             return back()->withErrors([
-                'email'=> 'Invalid email or password.',
+                'email' => 'Invalid email or password.',
             ]);
-
-            $request->session()->regenerate();
-
-            return redirect($this->authService->redirectByRole());
         }
+
+        $request->session()->regenerate();
+
+        return redirect()->intended($this->authService->redirectByRole());
     }
 
     public function destroy(Request $request){
