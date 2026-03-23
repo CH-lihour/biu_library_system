@@ -32,6 +32,6 @@ class AuthService
             'librarian' => route('librarian.dashboard'),
             'member' => route('member.dashboard'),
             default => route('dashboard'),
-        }
+        };
     }
 }
