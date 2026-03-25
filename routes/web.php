@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 
@@ -11,9 +12,16 @@ Route::middleware('guest')->group(function(){
 });
 
 Route::middleware('auth')->group(function(){
-    Route::get('/logout', [LoginController::class, 'destroy'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     
+    // === Dashboard ===
     Route::get('/dashboard', function(){
         return view('index');
     })->name('dashboard');
+
+    // === Books ===
+    Route::middleware('role:admin,librarian')->group(function(){
+        Route::resource('books', BookController::class);
+    });
+
 });

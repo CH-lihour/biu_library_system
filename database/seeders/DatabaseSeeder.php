@@ -30,6 +30,12 @@ class DatabaseSeeder extends Seeder
                 'email' => 'dona@test.com',
                 'password' => Hash::make('dona1234'),
                 'role' => 'librarian',
+            ],
+            [
+                'name' => 'pich',
+                'email' => 'pich@test.com',
+                'password' => Hash::make('pich1234'),
+                'role' => 'member',
             ]
         ]);
     }

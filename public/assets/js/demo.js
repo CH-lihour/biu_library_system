@@ -190,18 +190,18 @@ Circles.create({
 })
 
 //Notify
-$.notify({
-	icon: 'icon-bell',
-	title: 'BIU	Library System',
-	message: 'BIU	Library System For Campus 1',
-},{
-	type: 'secondary',
-	placement: {
-		from: "bottom",
-		align: "right"
-	},
-	time: 1000,
-});
+// $.notify({
+// 	icon: 'icon-bell',
+// 	title: 'BIU	Library System',
+// 	message: 'BIU	Library System For Campus 1',
+// },{
+// 	type: 'secondary',
+// 	placement: {
+// 		from: "bottom",
+// 		align: "right"
+// 	},
+// 	time: 1000,
+// });
 
 // Jsvectormap
 var world_map = new jsVectorMap({
