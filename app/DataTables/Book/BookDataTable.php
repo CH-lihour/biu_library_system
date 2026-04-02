@@ -9,7 +9,6 @@ use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class BookDataTable extends DataTable
@@ -24,14 +23,22 @@ class BookDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->editColumn('cover_image_url', function ($book) {
+                $src = $book->cover_image_url
+                    ? asset('storage/' . $book->cover_image_url)
+                    : asset('assets/img/books/no-cover.jpg');
+
                 if ($book->cover_image_url) {
-                    return '<img src="' . asset('storage/' . $book->cover_image_url) . '"
-                                alt="' . $book->title . '"
-                                style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px;">';
+                    return '<a href="javascript:void(0)" class="js-image-preview" data-image="' . e($src) . '" data-title="' . e($book->title) . '">
+                                <img src="' . e($src) . '"
+                                    alt="' . e($book->title) . '"
+                                    style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px; cursor: zoom-in;">
+                            </a>';
                 }
-                return '<img src="' . asset('assets/img/books/no-cover.jpg') . '"
-                            alt="No Cover"
-                            style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px;">';
+                return '<a href="javascript:void(0)" class="js-image-preview" data-image="' . e($src) . '" data-title="No Cover">
+                            <img src="' . e($src) . '"
+                                alt="No Cover"
+                                style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px; cursor: zoom-in;">
+                        </a>';
             })
             ->editColumn("created_at", fn($query) => $query->created_at->format("d-M-Y"))
             ->addColumn('action', function($query) {
