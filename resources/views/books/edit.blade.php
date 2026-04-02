@@ -119,9 +119,10 @@
         </div>
     </div>
 </div>
-
+@endsection
+@push('scripts')
 <script>
-    $(document).ready(function () {
+    $(function () {
         $('#cover_image_url').on('change', function (event) {
             const file = event.target.files[0];
             const $preview = $('#image_preview');
@@ -137,4 +138,4 @@
         });
     });
 </script>
-@endsection
+@endpush
