@@ -34,11 +34,16 @@ class BookService
     public function updateBook(int $id, array $data)
     {
         $book = $this->bookRepository->findById($id);
-        if ($book->cover_image_url) {
-            Storage::disk('public')->delete($book->cover_image_url);
+
+        if (isset($data['cover_image_url']) && $data['cover_image_url'] instanceof UploadedFile) {
+            if ($book->cover_image_url) {
+                Storage::disk('public')->delete($book->cover_image_url);
+            }
+
+            $data['cover_image_url'] = $this->uploadImage($data['cover_image_url']);
         }
 
-    return $this->bookRepository->delete($id);
+        return $this->bookRepository->update($id, $data);
     }
 
     public function deleteBook(int $id)
