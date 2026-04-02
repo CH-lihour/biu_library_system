@@ -355,7 +355,21 @@
                     </div>
                 </div>
                 <div class="result-toast" id="toast"></div>
-                
+
+                <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="imagePreviewTitle">Image Preview</h5>
+                                <button type="button" class="btn btn-light btn-close text-black" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img id="imagePreviewModalImg" src="" alt="Preview" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="page-inner">
                     <div class="page-header flex-wrap">
                         <h3 class="fw-bold mb-3">@yield('page-title', 'Dashboard')</h3>
@@ -378,18 +392,18 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#"> Help </a>
+                                <a class="nav-link" href="https://github.com/CH-lihour"> Help </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#"> Licenses </a>
+                                <a class="nav-link" href="https://github.com/CH-lihour"> Licenses </a>
                             </li>
                         </ul>
                     </nav>
-                    <div class="copyright">
+                    {{-- <div class="copyright">
                         {{  date('Y') == '2026' ? '2026' : '2026 - ' . date('Y') }}, made with <i
                             class="fa fa-heart heart text-danger"></i> by
                         <a href="https://github.com/CH-lihour" target="_blank">Chetha Lihour</a>
-                    </div>
+                    </div> --}}
                     <div>
                         Distributed by
                         <a target="_blank" href="https://github.com/CH-lihour">Chetha Lihour</a>.
@@ -661,6 +675,17 @@
                 form.dataset.confirmed = '1';
                 form.submit();
             });
+        });
+
+        $(document).on('click', '.js-image-preview', function (event) {
+            event.preventDefault();
+
+            const image = $(this).data('image');
+            const title = $(this).data('title') || 'Image Preview';
+
+            $('#imagePreviewTitle').text(title);
+            $('#imagePreviewModalImg').attr('src', image);
+            $('#imagePreviewModal').modal('show');
         });
 
         $(document).on('submit', '.js-delete-form', function (event) {
