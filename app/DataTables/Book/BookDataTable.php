@@ -118,7 +118,8 @@ class BookDataTable extends DataTable
             Column::make('language')
                 ->title('Language'),
             Column::make('created_at')
-                ->searchable(false),
+                ->searchable(false)
+                ->exportable(false),
             Column::computed('action')
                 ->title('Action')
                 ->exportable(false)
