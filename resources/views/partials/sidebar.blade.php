@@ -22,9 +22,12 @@
     </div>
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
-            <ul class="nav nav-secondary">
-                <li class="nav-item active">
-                    <a href="{{ route('dashboard') }}" class="collapsed" aria-expanded="false">
+            @php
+                $isBookModule = request()->routeIs('books.*') || request()->routeIs('authors.*');
+            @endphp
+            <ul class="nav nav-secondary" id="sidebarMenuAccordion">
+                <li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? '' : 'collapsed' }}" aria-expanded="{{ request()->routeIs('dashboard') ? 'true' : 'false' }}">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>
                     </a>
@@ -37,21 +40,21 @@
                 </li>
                 @auth
                     @if (auth()->user()->role === 'admin' || auth()->user()->role === 'librarian')
-                        <li class="nav-item">
-                            <a data-bs-toggle="collapse" href="#base">
+                        <li class="nav-item {{ $isBookModule ? 'active submenu' : '' }}">
+                            <a data-bs-toggle="collapse" href="#base" class="{{ $isBookModule ? '' : 'collapsed' }}" aria-expanded="{{ $isBookModule ? 'true' : 'false' }}">
                                 <i class="icon-book-open"></i>
                                 <p>Book</p>
                                 <span class="caret"></span>
                             </a>
-                            <div v class="collapse" id="base">
+                            <div class="collapse {{ $isBookModule ? 'show' : '' }}" id="base" data-bs-parent="#sidebarMenuAccordion">
                                 <ul class="nav nav-collapse">
-                                    <li>
+                                    <li class="{{ request()->routeIs('books.*') ? 'active' : '' }}">
                                         <a href="{{ route('books.index') }}">
                                             <span class="sub-item">All Books</span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="components/buttons.html">
+                                    <li class="{{ request()->routeIs('authors.*') ? 'active' : '' }}">
+                                        <a href="{{ route("authors.index") }}">
                                             <span class="sub-item">Authors</span>
                                         </a>
                                     </li>
@@ -64,7 +67,7 @@
                                 <p>Sidebar Layouts</p>
                                 <span class="caret"></span>
                             </a>
-                            <div class="collapse" id="sidebarLayouts">
+                            <div class="collapse" id="sidebarLayouts" data-bs-parent="#sidebarMenuAccordion">
                                 <ul class="nav nav-collapse">
                                     <li>
                                         <a href="sidebar-style-2.html">

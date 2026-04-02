@@ -25,7 +25,7 @@ class BookDataTable extends DataTable
             ->editColumn('cover_image_url', function ($book) {
                 $src = $book->cover_image_url
                     ? asset('storage/' . $book->cover_image_url)
-                    : asset('assets/img/books/no-cover.jpg');
+                    : asset('assets/img/books/no_cover.jpg');
 
                 if ($book->cover_image_url) {
                     return '<a href="javascript:void(0)" class="js-image-preview" data-image="' . e($src) . '" data-title="' . e($book->title) . '">
