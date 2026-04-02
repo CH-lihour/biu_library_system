@@ -18,7 +18,7 @@
         <i class="icon-arrow-right"></i>
     </li>
     <li class="nav-item">
-        <a href="{{ route('books.create') }}">Create New Book</a>
+        <a>Edit Book</a>
     </li>
 </ul>
 @endsection
@@ -32,17 +32,18 @@
                 </div>
             </div>
             <div class="card-body">
-                <form action="{{ route('books.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('books.update', $book->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     <div class="row">
                         <div class="col-md-6 pe-5 form-group">
                             <label for="title">Title <span class="text-danger">*</span></label>
-                            <input type="text" name="title" class="form-control" id="title" value="{{ old('title') }}" placeholder="Enter title" />
+                            <input type="text" name="title" class="form-control" id="title" value="{{ old('title', $book->title) }}" placeholder="Enter title" />
                             <span class="text-danger">{{ $errors->first('title') }}</span>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="isbn">Is Bn <span class="text-danger">*</span></label>
-                            <input type="text" name="isbn" class="form-control" id="isbn" value="{{ old('isbn') }}" placeholder="Enter is bn" />
+                            <input type="text" name="isbn" class="form-control" id="isbn" value="{{ old('isbn', $book->isbn) }}" placeholder="Enter is bn" />
                             <span class="text-danger">{{ $errors->first('isbn') }}</span>
                         </div>
 
@@ -51,7 +52,7 @@
                             <select name="publisher_id" class="custom-select" id="publishers">
                                 <option disabled selected>-- Select Publisher --</option>
                                 @foreach ($publishers as $pub)
-                                    <option value="{{ $pub->id }}" {{ old('publisher_id') == $pub->id ? 'selected' : '' }}>{{ $pub->name }} </option>
+                                    <option value="{{ $pub->id }}" {{ old('publisher_id', $book->publisher_id) == $pub->id ? 'selected' : '' }}>{{ $pub->name }} </option>
                                 @endforeach
                             </select>
                             <span class="text-danger">{{ $errors->first('publisher_id') }}</span>
@@ -61,7 +62,7 @@
                             <select name="category_id" class="custom-select" id="categories">
                                 <option disabled selected>-- Select Category --</option>
                                 @foreach ($categories as $cat)
-                                    <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }} </option>
+                                    <option value="{{ $cat->id }}" {{ old('category_id', $book->category_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }} </option>
                                 @endforeach
                             </select>
                             <span class="text-danger">{{ $errors->first('category_id') }}</span>
@@ -69,23 +70,23 @@
 
                         <div class="col-md-6 pe-5 form-group">
                             <label for="publish_year">Publish Year </label>
-                            <input type="number" name="publish_year" class="form-control" id="pages" value="{{ old('publish_year') }}" placeholder="Enter publish year" />
+                            <input type="number" name="publish_year" class="form-control" id="pages" value="{{ old('publish_year', $book->publish_year) }}" placeholder="Enter publish year" />
                             <span class="text-danger">{{ $errors->first('publish_year') }}</span>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="pages">Page </label>
-                            <input type="number" name="pages" class="form-control" id="pages" value="{{ old('pages') }}" placeholder="Enter pages" />
+                            <input type="number" name="pages" class="form-control" id="pages" value="{{ old('pages', $book->pages) }}" placeholder="Enter pages" />
                             <span class="text-danger">{{ $errors->first('pages') }}</span>
                         </div>
 
                         <div class="col-md-6 pe-5 form-group">
                             <label for="language">Language </label>
-                            <input type="text" name="language" class="form-control" id="language" value="{{ old('language') }}" placeholder="Enter book's language" />
+                            <input type="text" name="language" class="form-control" id="language" value="{{ old('language', $book->language) }}" placeholder="Enter book's language" />
                             <span class="text-danger">{{ $errors->first('language') }}</span>
                         </div>
                         <div class="col-md-6 pe-5 form-group">
                             <label for="shelf_location">Shelf Location </label>
-                            <input type="text" name="shelf_location" class="form-control" id="shelft_location" value="{{ old('shelf_location') }}" placeholder="Enter shelf location" />
+                            <input type="text" name="shelf_location" class="form-control" id="shelft_location" value="{{ old('shelf_location', $book->shelf_location) }}" placeholder="Enter shelf location" />
                             <span class="text-danger">{{ $errors->first('shelf_location') }}</span>
                         </div>
 
@@ -93,8 +94,18 @@
                             <label for="cover_image_url">Cover Image</label>
                             <br/>
                             <input type="file" name="cover_image_url" class="form-control-file" id="cover_image_url" accept="image/*"/>
+
+                            @php
+                                $coverImage = null;
+                                if (!empty($book->cover_image_url)) {
+                                    $coverImage = \Illuminate\Support\Str::startsWith($book->cover_image_url, ['http://', 'https://'])
+                                        ? $book->cover_image_url
+                                        : asset('storage/' . $book->cover_image_url);
+                                }
+                            @endphp
+
                             <div class="mt-3">
-                                <img id="image_preview" src="#" alt="Image Preview" style="max-width: 200px; display: none; border-radius: 8px;" />
+                                <img id="image_preview" data-original="{{ $coverImage }}" src="{{ $coverImage ?? '#' }}" alt="Image Preview" style="max-width: 200px; display: {{ $coverImage ? 'block' : 'none' }}; border-radius: 8px;" />
                             </div>
                             <span class="text-danger">{{ $errors->first('cover_image_url') }}</span>
                         </div>
@@ -110,17 +121,20 @@
 </div>
 
 <script>
-    document.getElementById('cover_image_url').addEventListener('change', function(event) {
-        const [file] = event.target.files;
-        const preview = document.getElementById('image_preview');
+    $(document).ready(function () {
+        $('#cover_image_url').on('change', function (event) {
+            const file = event.target.files[0];
+            const $preview = $('#image_preview');
+            const original = $preview.data('original') || '#';
 
-        if (file) {
-            preview.src = URL.createObjectURL(file);
-            preview.style.display = 'block';
-        } else {
-            preview.src = '#';
-            preview.style.display = 'none';
-        }
+            if (file) {
+                $preview.attr('src', URL.createObjectURL(file)).show();
+            } else if (original !== '#') {
+                $preview.attr('src', original).show();
+            } else {
+                $preview.attr('src', '#').hide();
+            }
+        });
     });
 </script>
 @endsection

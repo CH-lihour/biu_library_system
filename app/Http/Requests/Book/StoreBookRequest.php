@@ -19,10 +19,10 @@ class StoreBookRequest extends FormRequest
             'title'            => 'required|string|max:200',
             'publisher_id'     => 'required|exists:publishers,id',
             'category_id'      => 'required|exists:categories,id',
-            'publish_year'     => 'required|integer|min:1000|max:' . date('Y'),
-            'language'         => 'required|string|max:50',
-            'cover_image_url' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',  
-            'shelf_location'   => 'nullable|string|max:100', 
+            'publish_year'     => 'nullable|integer|min:1000|max:' . date('Y'),
+            'language'         => 'nullable|max:50|string',
+            'cover_image_url'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',  
+            'shelf_location'   => 'nullable|max:100|string', 
             'pages'            => 'nullable|integer|min:1',  
         ];
     }
@@ -38,12 +38,13 @@ class StoreBookRequest extends FormRequest
             'publisher_id.exists'    => 'Publisher does not exist.',
             'category_id.required'   => 'Category is required.',
             'category_id.exists'     => 'Category does not exist.',
-            'publish_year.required'  => 'Publish year is required.',
             'publish_year.integer'   => 'Publish year must be a number.',
             'cover_image_url.image'  => 'Cover image must be a valid image file.',
             'cover_image_url.mimes'  => 'Cover image must be a jpg, jpeg, png, or webp file.',
-            'language.required'      => 'Language is required.',
+            'language.max'           => 'Language must be less than 50 characters.',
             'shelf_location.string'  => 'Shelf location must be a string.',
+            'pages.integer'          => 'Pages must be a number.',
+            'pages.min'              => 'Pages must be at least 1.',
         ];
     }
 

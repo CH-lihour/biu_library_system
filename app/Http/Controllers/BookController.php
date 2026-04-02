@@ -13,7 +13,8 @@ class BookController extends Controller
 {
     public function __construct(
         protected BookService $bookService
-    ) {}
+    ) {
+    }
 
     public function index(BookDataTable $dataTable)
     {
@@ -31,34 +32,34 @@ class BookController extends Controller
     {
         $this->bookService->createBook($request->validated());
         return redirect()->route('books.index')
-                         ->with('success', 'Book created successfully.');
+            ->with('success', 'Book created successfully.');
     }
 
-    public function show(int $id)                   
+    public function show(int $id)
     {
         $book = $this->bookService->getBook($id);
         return view('books.show', compact('book'));
     }
 
-    public function edit(int $id)                   
+    public function edit(int $id)
     {
-        $book       = $this->bookService->getBook($id);
+        $book = $this->bookService->getBook($id);
         $categories = Category::all();
         $publishers = Publisher::all();
         return view('books.edit', compact('book', 'categories', 'publishers'));
     }
 
-    public function update(UpdateBookRequest $request, int $id)  
+    public function update(UpdateBookRequest $request, int $id)
     {
         $this->bookService->updateBook($id, $request->validated());
         return redirect()->route('books.index')
-                         ->with('success', 'Book updated successfully.');
+            ->with('success', 'Book updated successfully.');
     }
 
-    public function destroy(int $id)                 
+    public function destroy(int $id)
     {
         $this->bookService->deleteBook($id);
         return redirect()->route('books.index')
-                         ->with('success', 'Book deleted successfully.');
+            ->with('success', 'Book deleted successfully.');
     }
 }

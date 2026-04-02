@@ -25,15 +25,18 @@ class BookDataTable extends DataTable
             ->addIndexColumn()
             ->editColumn('cover_image_url', function ($book) {
                 if ($book->cover_image_url) {
-                    return '<img src="' . asset('storage/' . $book->cover_image_url) . '" 
+                    return '<img src="' . asset('storage/' . $book->cover_image_url) . '"
                                 alt="' . $book->title . '"
                                 style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px;">';
                 }
-                return '<img src="' . asset('assets/img/no-cover.jpg') . '" 
+                return '<img src="' . asset('assets/img/books/no-cover.jpg') . '"
                             alt="No Cover"
                             style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px;">';
             })
             ->editColumn("created_at", fn($query) => $query->created_at->format("d-M-Y"))
+            ->addColumn('action', function($query) {
+                return view('books.actions', compact('query'));
+            })
             ->rawColumns(['cover_image_url', 'action']);
     }
 
@@ -63,8 +66,8 @@ class BookDataTable extends DataTable
                         'dom'        => 'Brftip',
                         'columnDefs' => [
                             [
-                                'orderable' => false, 
-                                'targets'   => [1],    
+                                'orderable' => false,
+                                'targets'   => [1],
                             ],
                         ],
                     ])
@@ -87,16 +90,15 @@ class BookDataTable extends DataTable
     {
         return [
             Column::computed('DT_RowIndex')
-                ->title('No')    
+                ->title('No')
                 ->width(20)
                 ->addClass('text-center'),
             Column::make('cover_image_url')
                 ->title('Cover Image')
                 ->addClass('text-center')
-                ->width(10)
                 ->orderable(false)
                 ->searchable(false)
-                ->exportable(false),    
+                ->exportable(false),
             Column::make('title')
                 ->title('title'),
             Column::make('isbn')
@@ -110,6 +112,11 @@ class BookDataTable extends DataTable
                 ->title('Language'),
             Column::make('created_at')
                 ->searchable(false),
+            Column::computed('action')
+                ->title('Action')
+                ->exportable(false)
+                ->printable(false)
+                ->addClass('text-center'),
         ];
     }
 

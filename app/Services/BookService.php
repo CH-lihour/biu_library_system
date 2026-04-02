@@ -24,7 +24,6 @@ class BookService
 
     public function createBook(array $data)
     {
-        // handle image upload
         if (isset($data['cover_image_url']) && $data['cover_image_url'] instanceof UploadedFile) {
             $data['cover_image_url'] = $this->uploadImage($data['cover_image_url']);
         }
@@ -35,9 +34,8 @@ class BookService
     public function updateBook(int $id, array $data)
     {
         $book = $this->bookRepository->findById($id);
-        // handle image upload
         if ($book->cover_image_url) {
-            Storage::disk('public')->delete($book->cover_image_url); 
+            Storage::disk('public')->delete($book->cover_image_url);
         }
 
     return $this->bookRepository->delete($id);

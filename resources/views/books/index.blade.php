@@ -27,9 +27,9 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <h4 class="card-title">All Books</h4>
-                        <a href="{{ route('books.create') }}" class="btn btn-primary btn-round ms-auto">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 class="card-title mb-0">All Books</h4>
+                        <a href="{{ route('books.create') }}" class="btn btn-primary btn-round">
                             <i class="fa fa-plus"></i>
                             Add Book
                         </a>
