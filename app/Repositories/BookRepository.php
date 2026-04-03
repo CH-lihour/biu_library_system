@@ -4,15 +4,9 @@ namespace App\Repositories;
 
 use App\Models\Book;
 use App\Repositories\Interfaces\BookRepositoryInterface;
-use Illuminate\Support\Facades\Storage;
 
 class BookRepository implements BookRepositoryInterface
 {
-    public function getAll()
-    {
-        return Book::with(['publisher', 'category'])->latest()->paginate(10);
-    }
-
     public function findById(int $id)
     {
         return Book::with(['publisher', 'category'])->findOrFail($id);

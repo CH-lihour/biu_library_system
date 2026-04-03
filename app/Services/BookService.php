@@ -12,11 +12,6 @@ class BookService
         protected BookRepositoryInterface $bookRepository
     ) {}
 
-    public function getAllBooks()
-    {
-        return $this->bookRepository->getAll();
-    }
-
     public function getBook(int $id)
     {
         return $this->bookRepository->findById($id);

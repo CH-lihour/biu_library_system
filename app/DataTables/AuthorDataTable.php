@@ -6,10 +6,7 @@ use App\Models\Author;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
-use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class AuthorDataTable extends DataTable
@@ -27,6 +24,20 @@ class AuthorDataTable extends DataTable
                     return view('authors.actions', compact('query'));
                 }
             )
+            ->addColumn('fullname', function($query) {
+                return ucfirst($query->firstname) . ' ' . ucfirst($query->lastname);
+            })
+            ->filterColumn('fullname', function ($query, $keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('firstname', 'like', "%{$keyword}%")
+                        ->orWhere('lastname', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderColumn('fullname', function ($query, $order) {
+                $query->orderBy('firstname', $order)
+                    ->orderBy('lastname', $order);
+            })
+            ->editColumn("bio", fn($query) => $query->bio ?? '-')
             ->editColumn("created_at", fn($query) => $query->created_at->format("d-M-Y"))
             ->rawColumns(['action']);
     }
@@ -52,14 +63,6 @@ class AuthorDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(1)
             ->selectStyleSingle();
-            // ->buttons([
-            //     Button::make('excel'),
-            //     Button::make('csv'),
-            //     Button::make('pdf'),
-            //     Button::make('print'),
-            //     Button::make('reset'),
-            //     Button::make('reload')
-            // ]);
     }
 
     /**
@@ -74,13 +77,16 @@ class AuthorDataTable extends DataTable
                 ->printable(false)
                 ->width(60)
                 ->addClass('text-center'),
-            Column::make('firstname')->title('First Name'),
-            Column::make('lastname')->title('Last Name'),
+            Column::make('fullname')->title('Full Name'),
             Column::make('email')->title('Email'),
             Column::make('bio')->title('Bio'),
             Column::make('created_at')->title('Created At'),
             Column::computed('action')
-                ->title('Action'),
+                ->title('Action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
         ];
     }
 
