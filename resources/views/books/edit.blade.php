@@ -49,7 +49,7 @@
 
                         <div class="col-md-6 pe-5 form-group">
                             <label for="publishers">Publishers <span class="text-danger">*</span></label>
-                            <select name="publisher_id" class="custom-select" id="publishers">
+                            <select name="publisher_id" class="form-select" id="publishers">
                                 <option disabled selected>-- Select Publisher --</option>
                                 @foreach ($publishers as $pub)
                                     <option value="{{ $pub->id }}" {{ old('publisher_id', $book->publisher_id) == $pub->id ? 'selected' : '' }}>{{ $pub->name }} </option>
@@ -59,7 +59,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="categories">Category <span class="text-danger">*</span></label>
-                            <select name="category_id" class="custom-select" id="categories">
+                            <select name="category_id" class="form-select" id="categories">
                                 <option disabled selected>-- Select Category --</option>
                                 @foreach ($categories as $cat)
                                     <option value="{{ $cat->id }}" {{ old('category_id', $book->category_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }} </option>

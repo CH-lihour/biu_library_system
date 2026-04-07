@@ -23,7 +23,7 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             @php
-                $isBookModule = request()->routeIs('books.*') || request()->routeIs('authors.*');
+                $isBookModule = request()->routeIs('books.*') || request()->routeIs('authors.*') || request()->routeIs('publishers.*') || request()->routeIs('categories.*');
             @endphp
             <ul class="nav nav-secondary" id="sidebarMenuAccordion">
                 <li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -61,6 +61,11 @@
                                     <li class="{{ request()->routeIs('publishers.*') ? 'active' : '' }}">
                                         <a href="{{ route("publishers.index") }}">
                                             <span class="sub-item">Publishers</span>
+                                        </a>
+                                    </li>
+                                    <li class="{{ request()->routeIs('categories.*') ? 'active' : '' }}">
+                                        <a href="{{ route("categories.index") }}">
+                                            <span class="sub-item">Categories</span>
                                         </a>
                                     </li>
                                 </ul>

@@ -8,15 +8,15 @@
         <div class="col-sm-6 col-md-3">
             <x-stats-card
                 icon="fas fa-users"
-                label="Sales"
-                :count="auth()->user()->where('is_verified', 1)->count()"
+                label="Users"
+                :count="auth()->user()->count()"
                 color="icon-primary"
             />
         </div>
         <div class="col-sm-6 col-md-3">
             <x-stats-card
                 icon="fas fa-user-check"
-                label="Sales"
+                label="Members"
                 :count="\App\Models\Member::count()"
                 color="icon-info"
             />
@@ -33,7 +33,7 @@
             <x-stats-card
                 icon="fas fa-book"
                 label="Books"
-                :count="1"
+                :count="\App\Models\Book::count()"
                 color="icon-info"
             />
         </div>

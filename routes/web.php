@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PublisherController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', fn () => auth()->check() ? redirect()->route('dashboard') : redirect()->route('login') );
 
@@ -36,4 +37,8 @@ Route::middleware('auth')->group(function(){
         Route::resource('publishers', PublisherController::class);
     });
 
+    // === Categories ===
+    Route::middleware('role:admin,librarian')->group(function(){
+        Route::resource('categories', CategoryController::class);
+    });
 });
