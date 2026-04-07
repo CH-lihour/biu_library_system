@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\PublisherController;
 
 Route::get('/', fn () => auth()->check() ? redirect()->route('dashboard') : redirect()->route('login') );
 
@@ -28,6 +29,11 @@ Route::middleware('auth')->group(function(){
     // === Authors ===
     Route::middleware('role:admin,librarian')->group(function(){
         Route::resource('authors', AuthorController::class);
+    });
+
+    // === Publishers ===
+    Route::middleware('role:admin,librarian')->group(function(){
+        Route::resource('publishers', PublisherController::class);
     });
 
 });

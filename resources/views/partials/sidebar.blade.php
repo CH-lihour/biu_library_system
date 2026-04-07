@@ -58,6 +58,11 @@
                                             <span class="sub-item">Authors</span>
                                         </a>
                                     </li>
+                                    <li class="{{ request()->routeIs('publishers.*') ? 'active' : '' }}">
+                                        <a href="{{ route("publishers.index") }}">
+                                            <span class="sub-item">Publishers</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
