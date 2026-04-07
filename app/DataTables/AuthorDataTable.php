@@ -38,7 +38,7 @@ class AuthorDataTable extends DataTable
                     ->orderBy('lastname', $order);
             })
             ->editColumn("bio", fn($query) => $query->bio ?? '-')
-            ->editColumn("created_at", fn($query) => $query->created_at->format("d-M-Y"))
+            ->editColumn("created_at", fn($query) => format_date($query->created_at))
             ->rawColumns(['action']);
     }
 

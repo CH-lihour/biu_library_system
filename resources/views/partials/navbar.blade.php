@@ -241,7 +241,7 @@
                         <li>
                             <div class="user-box">
                                 <div class="avatar-lg">
-                                <img src="{{ asset('assets/img/profile/' . (auth()->user()->image ?? 'no_profile.png')) }}" alt="image profile" class="avatar-img rounded" />
+                                    {{ image_preview(auth()->user()->image, auth()->user()->name) }}
                                 </div>
                                 <div class="u-text">
                                     <h4>{{ auth()->user()->name }}</h4>

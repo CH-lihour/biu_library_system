@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\Book\BookDataTable;
+use App\DataTables\BookDataTable;
 use App\Http\Requests\Book\StoreBookRequest;
 use App\Http\Requests\Book\UpdateBookRequest;
 use App\Services\BookService;

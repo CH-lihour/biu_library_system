@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataTables\Book;
+namespace App\DataTables;
 
 use App\Models\Book;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
@@ -23,24 +23,9 @@ class BookDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->editColumn('cover_image_url', function ($book) {
-                $src = $book->cover_image_url
-                    ? asset('storage/' . $book->cover_image_url)
-                    : asset('assets/img/books/no_cover.jpg');
-
-                if ($book->cover_image_url) {
-                    return '<a href="javascript:void(0)" class="js-image-preview" data-image="' . e($src) . '" data-title="' . e($book->title) . '">
-                                <img src="' . e($src) . '"
-                                    alt="' . e($book->title) . '"
-                                    style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px; cursor: zoom-in;">
-                            </a>';
-                }
-                return '<a href="javascript:void(0)" class="js-image-preview" data-image="' . e($src) . '" data-title="No Cover">
-                            <img src="' . e($src) . '"
-                                alt="No Cover"
-                                style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px; cursor: zoom-in;">
-                        </a>';
+                return book_preview($book->cover_image_url, $book->title);
             })
-            ->editColumn("created_at", fn($query) => $query->created_at->format("d-M-Y"))
+            ->editColumn("created_at", fn($query) => format_date($query->created_at))
             ->addColumn('action', function($query) {
                 return view('books.actions', compact('query'));
             })

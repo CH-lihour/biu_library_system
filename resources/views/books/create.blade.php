@@ -83,7 +83,7 @@
                             <input type="text" name="language" class="form-control" id="language" value="{{ old('language') }}" placeholder="Enter book's language" />
                             <span class="text-danger">{{ $errors->first('language') }}</span>
                         </div>
-                        <div class="col-md-6 pe-5 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="shelf_location">Shelf Location </label>
                             <input type="text" name="shelf_location" class="form-control" id="shelft_location" value="{{ old('shelf_location') }}" placeholder="Enter shelf location" />
                             <span class="text-danger">{{ $errors->first('shelf_location') }}</span>

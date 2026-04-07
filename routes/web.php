@@ -6,6 +6,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\BookCopyController;
 
 Route::get('/', fn () => auth()->check() ? redirect()->route('dashboard') : redirect()->route('login') );
 
@@ -25,6 +26,11 @@ Route::middleware('auth')->group(function(){
     // === Books ===
     Route::middleware('role:admin,librarian')->group(function(){
         Route::resource('books', BookController::class);
+    });
+
+    // === Book Copies ===
+    Route::middleware('role:admin,librarian')->group(function(){
+        Route::resource('book-copies', BookCopyController::class);
     });
 
     // === Authors ===
