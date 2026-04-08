@@ -5,6 +5,10 @@ if (! function_exists('status_label')) {
     {
         $badges = [
             'available' => '<span class="badge bg-success">Available</span>',
+            'active' => '<span class="badge bg-success">Active</span>',
+            'inactive' => '<span class="badge bg-secondary">Inactive</span>',
+            'pending' => '<span class="badge bg-warning">Pending</span>',
+            'suspend' => '<span class="badge bg-danger">Suspended</span>',
             'borrowed' => '<span class="badge bg-warning">Borrowed</span>',
             'reserved' => '<span class="badge bg-info">Reserved</span>',
             'maintenance' => '<span class="badge bg-secondary">Maintenance</span>',

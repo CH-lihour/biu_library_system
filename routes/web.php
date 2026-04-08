@@ -1,12 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\PublisherController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookCopyController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PublisherController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => auth()->check() ? redirect()->route('dashboard') : redirect()->route('login') );
 
@@ -46,5 +47,10 @@ Route::middleware('auth')->group(function(){
     // === Categories ===
     Route::middleware('role:admin,librarian')->group(function(){
         Route::resource('categories', CategoryController::class);
+    });
+
+    // === Members ===
+    Route::middleware('role:admin,librarian')->group(function(){
+        Route::resource('members', MemberController::class);
     });
 });

@@ -29,4 +29,7 @@ class MemberPlan extends Model
         'deleted_at',
     ];
 
+    public function members(){
+        return $this->hasMany(Member::class, 'plan_id');
+    }
 }

@@ -22,9 +22,17 @@
     </div>
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
+
             @php
-                $isBookModule = request()->routeIs('books.*') || request()->routeIs('authors.*') || request()->routeIs('publishers.*') || request()->routeIs('categories.*') || request()->routeIs('book-copies.*');
+                $isBookModule = request()->routeIs('books.*')
+                                || request()->routeIs('authors.*')
+                                || request()->routeIs('publishers.*')
+                                || request()->routeIs('categories.*')
+                                || request()->routeIs('book-copies.*');
+
+                $isMemberModule = request()->routeIs('members.*');
             @endphp
+
             <ul class="nav nav-secondary" id="sidebarMenuAccordion">
                 <li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? '' : 'collapsed' }}" aria-expanded="{{ request()->routeIs('dashboard') ? 'true' : 'false' }}">
@@ -76,22 +84,22 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-item">
-                            <a data-bs-toggle="collapse" href="#sidebarLayouts">
+                        <li class="nav-item {{ $isMemberModule ? 'active submenu' : '' }}">
+                            <a data-bs-toggle="collapse" href="#members" class="{{ $isMemberModule ? '' : 'collapsed' }}" aria-expanded="{{ $isMemberModule ? 'true' : 'false' }}">
                                 <i class="fas fa-th-list"></i>
-                                <p>Sidebar Layouts</p>
+                                <p>Members</p>
                                 <span class="caret"></span>
                             </a>
-                            <div class="collapse" id="sidebarLayouts" data-bs-parent="#sidebarMenuAccordion">
+                            <div class="collapse {{ $isMemberModule ? 'show' : '' }}" id="members" data-bs-parent="#sidebarMenuAccordion">
                                 <ul class="nav nav-collapse">
-                                    <li>
-                                        <a href="sidebar-style-2.html">
-                                            <span class="sub-item">Sidebar Style 2</span>
+                                    <li class="{{ request()->routeIs('members.*') ? 'active' : '' }}">
+                                        <a href="{{ route('members.index') }}">
+                                            <span class="sub-item">Members</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="icon-menu.html">
-                                            <span class="sub-item">Icon Menu</span>
+                                        <a href="">
+                                            <span class="sub-item">Member Plans</span>
                                         </a>
                                     </li>
                                 </ul>
