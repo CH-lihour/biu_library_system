@@ -9,7 +9,7 @@
             <x-stats-card
                 icon="fas fa-users"
                 label="Users"
-                :count="auth()->user()->count()"
+                :count="auth()->user()->where('is_verified', true)->count()"
                 color="icon-primary"
             />
         </div>

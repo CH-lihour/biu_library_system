@@ -6,6 +6,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookCopyController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MemberPlanController;
 use App\Http\Controllers\PublisherController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,5 +53,10 @@ Route::middleware('auth')->group(function(){
     // === Members ===
     Route::middleware('role:admin,librarian')->group(function(){
         Route::resource('members', MemberController::class);
+    });
+
+    // === Member Plans ===
+    Route::middleware('role:admin,librarian')->group(function(){
+        Route::resource('member-plans', MemberPlanController::class);
     });
 });

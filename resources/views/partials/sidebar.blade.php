@@ -30,7 +30,8 @@
                                 || request()->routeIs('categories.*')
                                 || request()->routeIs('book-copies.*');
 
-                $isMemberModule = request()->routeIs('members.*');
+                $isMemberModule = request()->routeIs('members.*')
+                                || request()->routeIs('member-plans.*');
             @endphp
 
             <ul class="nav nav-secondary" id="sidebarMenuAccordion">
@@ -97,8 +98,8 @@
                                             <span class="sub-item">Members</span>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="">
+                                    <li class="{{ request()->routeIs('member-plans.*') ? 'active' : '' }}">
+                                        <a href="{{ route('member-plans.index') }}">
                                             <span class="sub-item">Member Plans</span>
                                         </a>
                                     </li>

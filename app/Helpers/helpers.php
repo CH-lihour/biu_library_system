@@ -58,9 +58,17 @@ if(! function_exists('book_preview')) {
 if(! function_exists('image_preview')) {
     function image_preview(?string $url, string $title = 'Image Preview'): string
     {
-        $src = $url ? asset('storage/' . $url) : asset('assets/img/books/no_cover.jpg');
-        $alt = $url ? $title : 'No Cover';
+        $src = $url ? asset('storage/' . $url) : asset('assets/img/profile/no_profile.png');
+        $alt = $url ? $title : 'No Profile';
 
         return '<img src="' . e($src) . '" alt="' . e($alt) . '" class="avatar-img rounded" />';
+    }
+}
+
+if (! function_exists('format_currency')) {
+    function format_currency($amount, string $currency ='USD '): string
+    {
+        $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
+        return $formatter->formatCurrency($amount, $currency);
     }
 }

@@ -20,9 +20,8 @@ class MemberPlan extends Model
     ];
 
     protected $casts = [
-        'loan_per_days' => 'integer',
-        'fine_per_day' => 'decimal',
-        'discount_fee' => 'decimal',
+        'fine_per_day' => 'decimal:2',
+        'discount_fee' => 'decimal:2',
     ];
 
     protected $hidden = [

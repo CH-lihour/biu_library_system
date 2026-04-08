@@ -229,7 +229,7 @@
             <li class="nav-item topbar-user dropdown hidden-caret">
                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                     <div class="avatar-sm">
-                        <img src="{{ asset('assets/img/profile/' . (auth()->user()->image ?? 'no_profile.png')) }}" alt="..." class="avatar-img rounded-circle" />
+                        {!! image_preview(auth()->user()->image, auth()->user()->name) !!}
                     </div>
                     <span class="profile-username">
                         <span class="op-7">Hi,</span>
@@ -241,7 +241,7 @@
                         <li>
                             <div class="user-box">
                                 <div class="avatar-lg">
-                                    {{ image_preview(auth()->user()->image, auth()->user()->name) }}
+                                    {!! image_preview(auth()->user()->image, auth()->user()->name) !!}
                                 </div>
                                 <div class="u-text">
                                     <h4>{{ auth()->user()->name }}</h4>
