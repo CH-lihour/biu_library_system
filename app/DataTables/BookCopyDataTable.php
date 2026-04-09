@@ -20,7 +20,7 @@ class BookCopyDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addIndexColumn()
-            ->editColumn('title', function ($query) {
+            ->addColumn('title', function ($query) {
                 return $query->book ? $query->title : '-';
             })
             ->editColumn("created_at", fn($query) => format_date($query->created_at))

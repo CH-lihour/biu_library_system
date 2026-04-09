@@ -48,8 +48,7 @@
 
                         <div class="col-md-6 pe-5 form-group">
                             <label for="publishers">Publishers <span class="text-danger">*</span></label>
-                            <select name="publisher_id" class="form-select" id="publishers">
-                                <option disabled selected>-- Select Publisher --</option>
+                            <select name="publisher_id" class="form-select js-select2" id="publishers" data-placeholder="Select publisher" data-allow-clear="1">
                                 @foreach ($publishers as $pub)
                                     <option value="{{ $pub->id }}" {{ old('publisher_id') == $pub->id ? 'selected' : '' }}>{{ $pub->name }} </option>
                                 @endforeach
@@ -58,8 +57,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="categories">Category <span class="text-danger">*</span></label>
-                            <select name="category_id" class="form-select" id="categories">
-                                <option disabled selected>-- Select Category --</option>
+                            <select name="category_id" class="form-select js-select2" id="categories" data-placeholder="Select category" data-allow-clear="1">
                                 @foreach ($categories as $cat)
                                     <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }} </option>
                                 @endforeach

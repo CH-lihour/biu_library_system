@@ -20,6 +20,18 @@ if (! function_exists('status_label')) {
     }
 }
 
+if(! function_exists('status_badge')) {
+    function status_badge(string $status, bool $is_success = false): string
+    {
+        $badges = [
+            true => "<span class='badge bg-success'>$status</span>",
+            false => "<span class='badge bg-danger'>$status</span>"
+        ];
+
+        return $badges[$is_success] ?? "<span class='badge bg-secondary'>$status</span>";
+    }
+}
+
 if (! function_exists('format_date')) {
     function format_date($date, string $format = 'd-M-Y'): string
     {

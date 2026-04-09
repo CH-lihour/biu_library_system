@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookCopyController;
+use App\Http\Controllers\BorrowTransactionController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberPlanController;
@@ -25,38 +26,32 @@ Route::middleware('auth')->group(function(){
         return view('index');
     })->name('dashboard');
 
-    // === Books ===
     Route::middleware('role:admin,librarian')->group(function(){
+        // === Books ===
         Route::resource('books', BookController::class);
-    });
 
-    // === Book Copies ===
-    Route::middleware('role:admin,librarian')->group(function(){
+        // === Book Copies ===
         Route::resource('book-copies', BookCopyController::class);
-    });
 
-    // === Authors ===
-    Route::middleware('role:admin,librarian')->group(function(){
+        // === Authors ===
         Route::resource('authors', AuthorController::class);
-    });
 
-    // === Publishers ===
-    Route::middleware('role:admin,librarian')->group(function(){
+        // === Publishers ===
         Route::resource('publishers', PublisherController::class);
-    });
 
-    // === Categories ===
-    Route::middleware('role:admin,librarian')->group(function(){
+        // === Categories ===
         Route::resource('categories', CategoryController::class);
-    });
 
-    // === Members ===
-    Route::middleware('role:admin,librarian')->group(function(){
+        // === Members ===
         Route::resource('members', MemberController::class);
-    });
 
-    // === Member Plans ===
-    Route::middleware('role:admin,librarian')->group(function(){
+        // === Member Plans ===
         Route::resource('member-plans', MemberPlanController::class);
+
+        // === Borrow Transactions ===
+        Route::get('/borrow-books', [BorrowTransactionController::class, 'index'])->name('borrows.index');
+        Route::get('/borrow-books/create', [BorrowTransactionController::class, 'create'])->name('borrows.create');
+        Route::post('/borrow-books', [BorrowTransactionController::class, 'store'])->name('borrows.store');
+        Route::post('/borrow-books/get-book-by-barcode', [BorrowTransactionController::class, 'getBookByBarcode'])->name('borrows.getBookByBarcode');
     });
 });

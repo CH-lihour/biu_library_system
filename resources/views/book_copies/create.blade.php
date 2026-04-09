@@ -16,8 +16,7 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="name">Books <span class="text-danger">*</span></label>
-                                <select name="book_id" id="book_id" class="form-select">
-                                    <option disabled selected>-- Select Book --</option>
+                                <select name="book_id" id="book_id" class="form-select js-select2" data-placeholder="Select book" data-allow-clear="1">
                                     @foreach ($books as $book)
                                         <option value="{{ $book->id }}" {{ old('book_id') == $book->id ? 'selected' : '' }}>{{ $book->title }}</option>
                                     @endforeach

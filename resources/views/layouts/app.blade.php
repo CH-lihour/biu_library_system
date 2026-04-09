@@ -34,6 +34,11 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
+    {{-- Select2 --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    @stack('styles')
+
     {{-- Flash Message Styles --}}
     <style>
         .flash-container {
@@ -326,6 +331,62 @@
             }
         }
     </style>
+
+    {{-- Better Select2 look (Bootstrap-like) --}}
+    <style>
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: 38px;
+            border: 1px solid #ced4da;
+            border-radius: .375rem;
+            padding: .375rem .75rem;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #212529;
+            line-height: normal;
+            padding-left: 0;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #6c757d;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+            right: 8px;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .25);
+        }
+
+        .select2-dropdown {
+            border: 1px solid #ced4da;
+            border-radius: .375rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .08);
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            border: 1px solid #ced4da;
+            border-radius: .375rem;
+            padding: .375rem .5rem;
+        }
+
+        /* Error state */
+        .is-invalid+.select2-container .select2-selection--single,
+        .select2-container .select2-selection--single.is-invalid {
+            border-color: #dc3545 !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -344,13 +405,15 @@
                 <div class="flash-container" id="flashContainer"></div>
 
                 <div class="dialog-overlay" id="overlay" onclick="handleOverlayClick(event)">
-                    <div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="dTitle" aria-describedby="dBody">
+                    <div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="dTitle"
+                        aria-describedby="dBody">
                         <div class="dialog-icon" id="dIcon"></div>
                         <h4 class="dialog-title" id="dTitle"></h4>
                         <p class="dialog-body" id="dBody"></p>
                         <div class="dialog-actions">
                             <button type="button" class="btn btn-no" onclick="closeDialog('no')">Cancel</button>
-                            <button type="button" class="btn btn-yes-danger" id="btnYes" onclick="closeDialog('yes')">Yes</button>
+                            <button type="button" class="btn btn-yes-danger" id="btnYes"
+                                onclick="closeDialog('yes')">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -361,10 +424,12 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="imagePreviewTitle">Image Preview</h5>
-                                <button type="button" class="btn btn-light btn-close text-black" data-bs-dismiss="modal" aria-label="Close"><i class="fas fa-times"></i></button>
+                                <button type="button" class="btn btn-light btn-close text-black" data-bs-dismiss="modal"
+                                    aria-label="Close"><i class="fas fa-times"></i></button>
                             </div>
                             <div class="modal-body text-center">
-                                <img id="imagePreviewModalImg" src="" alt="Preview" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;" />
+                                <img id="imagePreviewModalImg" src="" alt="Preview" class="img-fluid rounded"
+                                    style="max-height: 75vh; object-fit: contain;" />
                             </div>
                         </div>
                     </div>
@@ -400,7 +465,7 @@
                         </ul>
                     </nav>
                     {{-- <div class="copyright">
-                        {{  date('Y') == '2026' ? '2026' : '2026 - ' . date('Y') }}, made with <i
+                        {{ date('Y') == '2026' ? '2026' : '2026 - ' . date('Y') }}, made with <i
                             class="fa fa-heart heart text-danger"></i> by
                         <a href="https://github.com/CH-lihour" target="_blank">Chetha Lihour</a>
                     </div> --}}
@@ -454,6 +519,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    {{-- Select2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(function () {
+            $('.js-select2').each(function () {
+                const $el = $(this);
+                $el.select2({
+                    width: '100%',
+                    placeholder: $el.data('placeholder') || 'Select an option',
+                    allowClear: $el.data('allow-clear') === true || $el.data('allow-clear') === 1 || $el.data('allow-clear') === '1'
+                });
+            });
+        });
+    </script>
 
     <script>
         $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
@@ -652,15 +732,6 @@
     }
 
     let toastTimer;
-    // function showToast(t) {
-    //     const el = document.getElementById('toast');
-    //     el.style.background = t.bg;
-    //     el.style.color = t.color;
-    //     el.textContent = t.text;
-    //     el.classList.add('show');
-    //     clearTimeout(toastTimer);
-    //     toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
-    // }
 
     $(function () {
         $(document).on('click', '.js-delete-btn', function (event) {

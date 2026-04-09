@@ -32,6 +32,8 @@
 
                 $isMemberModule = request()->routeIs('members.*')
                                 || request()->routeIs('member-plans.*');
+
+                $isBookTransactionModule = request()->routeIs('borrows.*');
             @endphp
 
             <ul class="nav nav-secondary" id="sidebarMenuAccordion">
@@ -62,6 +64,11 @@
                                             <span class="sub-item">All Books</span>
                                         </a>
                                     </li>
+                                    <li class="{{ request()->routeIs('book-copies.*') ? 'active' : '' }}">
+                                        <a href="{{ route("book-copies.index") }}">
+                                            <span class="sub-item">Book Copies</span>
+                                        </a>
+                                    </li>
                                     <li class="{{ request()->routeIs('authors.*') ? 'active' : '' }}">
                                         <a href="{{ route("authors.index") }}">
                                             <span class="sub-item">Authors</span>
@@ -75,11 +82,6 @@
                                     <li class="{{ request()->routeIs('categories.*') ? 'active' : '' }}">
                                         <a href="{{ route("categories.index") }}">
                                             <span class="sub-item">Categories</span>
-                                        </a>
-                                    </li>
-                                    <li class="{{ request()->routeIs('book-copies.*') ? 'active' : '' }}">
-                                        <a href="{{ route("book-copies.index") }}">
-                                            <span class="sub-item">Book Copies</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -101,6 +103,22 @@
                                     <li class="{{ request()->routeIs('member-plans.*') ? 'active' : '' }}">
                                         <a href="{{ route('member-plans.index') }}">
                                             <span class="sub-item">Member Plans</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#bookTransactions" class="{{ $isBookTransactionModule ? '' : 'collapsed' }}" aria-expanded="{{ $isBookTransactionModule ? 'true' : 'false' }}">
+                                <i class="fas fa-arrow-circle-right"></i>
+                                <p>Book Transactions</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse {{ $isBookTransactionModule ? 'show' : '' }}" id="bookTransactions" data-bs-parent="#sidebarMenuAccordion">
+                                <ul class="nav nav-collapse">
+                                    <li class="{{ request()->routeIs('borrows.*') ? 'active' : '' }}">
+                                        <a href="{{ route('borrows.index') }}">
+                                            <span class="sub-item">Borrow Books</span>
                                         </a>
                                     </li>
                                 </ul>

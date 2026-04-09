@@ -25,8 +25,7 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="plan">Plan <span class="text-danger">*</span></label>
-                                <select name="plan_id" id="plan_id" class="form-select">
-                                    <option value="">Select Plan</option>
+                                <select name="plan_id" id="plan_id" class="form-select js-select2" data-placeholder="Select plan" data-allow-clear="1">
                                     @foreach ($plans as $plan)
                                         <option value="{{ $plan->id }}" {{ old('plan_id', $member->plan_id) == $plan->id ? 'selected' : '' }}>
                                             {{ $plan->name }} ({{ $plan->loan_duration_days }} days)
