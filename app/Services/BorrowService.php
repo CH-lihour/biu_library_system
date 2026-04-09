@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use \App\Repositories\BorrowRepository;
+use App\Repositories\Interfaces\BorrowRepositoryInterface;
 class BorrowService
 {
-    public function __construct(protected BorrowRepository $borrowRepository)
+    public function __construct(protected BorrowRepositoryInterface $borrowRepository)
     {
 
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\BookDataTable;
 use App\Http\Requests\Book\StoreBookRequest;
 use App\Http\Requests\Book\UpdateBookRequest;
+use App\Models\Author;
 use App\Services\BookService;
 use App\Models\Category;
 use App\Models\Publisher;
@@ -25,7 +26,8 @@ class BookController extends Controller
     {
         $categories = Category::all();
         $publishers = Publisher::all();
-        return view('books.create', compact('categories', 'publishers'));
+        $authors = Author::all();
+        return view('books.create', compact('categories', 'publishers', 'authors'));
     }
 
     public function store(StoreBookRequest $request)
@@ -35,18 +37,15 @@ class BookController extends Controller
             ->with('success', 'Book created successfully.');
     }
 
-    public function show(int $id)
-    {
-        $book = $this->bookService->getBook($id);
-        return view('books.show', compact('book'));
-    }
-
     public function edit(int $id)
     {
         $book = $this->bookService->getBook($id);
+        
         $categories = Category::all();
         $publishers = Publisher::all();
-        return view('books.edit', compact('book', 'categories', 'publishers'));
+        $authors    = Author::all();
+
+        return view('books.edit', compact('book', 'categories', 'publishers', 'authors'));
     }
 
     public function update(UpdateBookRequest $request, int $id)

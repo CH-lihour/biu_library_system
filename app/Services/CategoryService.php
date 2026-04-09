@@ -3,10 +3,10 @@
 namespace App\Services;
 
 
-use App\Repositories\CategoryRepository;
+use App\Repositories\Interfaces\CategoryRepositoryInterface;
 class CategoryService
 {
-    public function __construct(protected CategoryRepository $categoryRepository)
+    public function __construct(protected CategoryRepositoryInterface $categoryRepository)
     {
 
     }

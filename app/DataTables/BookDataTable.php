@@ -8,7 +8,6 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Services\DataTable;
 
 class BookDataTable extends DataTable
@@ -22,14 +21,14 @@ class BookDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addIndexColumn()
-            ->editColumn('cover_image_url', function ($book) {
-                return book_preview($book->cover_image_url, $book->title);
-            })
+            ->addColumn('title', fn($query) => ucfirst($query->title))
+            ->addColumn('publisher', fn($query) => $query->publisher?->name ?? '-')
+            ->addColumn('category', fn($query) => $query->category?->name ?? '-')
+            ->addColumn('authors', fn($query) => $query->authors?->pluck('full_name')->join('<br>') ?? '-')
+            ->editColumn('cover_image_url', fn($book) => book_preview($book->cover_image_url, $book->title))
             ->editColumn("created_at", fn($query) => format_date($query->created_at))
-            ->addColumn('action', function($query) {
-                return view('books.actions', compact('query'));
-            })
-            ->rawColumns(['cover_image_url', 'action']);
+            ->addColumn('action', fn($query) => view('books.actions', compact('query')))
+            ->rawColumns(['cover_image_url', 'action', 'authors']);
     }
 
     /**
@@ -39,7 +38,10 @@ class BookDataTable extends DataTable
      */
     public function query(Book $model): QueryBuilder
     {
-        return $model->newQuery();
+        $query = $model->newQuery()
+            ->with(['publisher', 'category', 'authors']);
+
+        return $query;
     }
 
     /**
@@ -95,6 +97,15 @@ class BookDataTable extends DataTable
                 ->title('title'),
             Column::make('isbn')
                 ->title('Is Bn'),
+            Column::make('authors')
+                ->title('Authors')
+                ->searchable(false),
+            Column::make('publisher')
+                ->title('Publisher')
+                ->searchable(false),
+            Column::make('category')
+                ->title('Category')
+                ->searchable(false),
             Column::make('publish_year')
                 ->title('Publish Year'),
             Column::make('pages')
@@ -102,6 +113,8 @@ class BookDataTable extends DataTable
                 ->searchable(false),
             Column::make('language')
                 ->title('Language'),
+            Column::make('shelf_location')
+                ->title('Shelf Location'),
             Column::make('created_at')
                 ->searchable(false)
                 ->exportable(false),

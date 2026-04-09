@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Repositories\BookCopyRepository;
+use App\Repositories\Interfaces\BookCopyRepositoryInterface;
 
 class BookCopyService
 {
-    public function __construct(protected BookCopyRepository $bookCopyRepository)
+    public function __construct(protected BookCopyRepositoryInterface $bookCopyRepository)
     {
 
     }

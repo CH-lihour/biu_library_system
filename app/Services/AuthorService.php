@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Author;
-use App\Repositories\AuthorRepository;
+use App\Repositories\Interfaces\AuthorRepositoryInterface;
 
 class AuthorService
 {
-    public function __construct(protected AuthorRepository $authorRepository)
+    public function __construct(protected AuthorRepositoryInterface $authorRepository)
     {
 
     }

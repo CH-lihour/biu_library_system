@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Repositories\PublisherRepository;
+use App\Repositories\Interfaces\PublisherRepositoryInterface;
 class PublisherService
 {
-    public function __construct(protected PublisherRepository $publisherRepository)
+    public function __construct(protected PublisherRepositoryInterface $publisherRepository)
     {
 
     }

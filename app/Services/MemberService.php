@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Repositories\MemberRepository;
+use App\Repositories\Interfaces\MemberRepositoryInterface;
 class MemberService
 {
-    public function __construct(protected MemberRepository $memberRepository)
+    public function __construct(protected MemberRepositoryInterface $memberRepository)
     {
 
     }

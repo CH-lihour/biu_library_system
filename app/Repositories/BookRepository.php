@@ -14,13 +14,24 @@ class BookRepository implements BookRepositoryInterface
 
     public function create(array $data)
     {
-        return Book::create($data);
+        $book = Book::create($data);
+        if (isset($data['author_ids'])) {
+            $book->authors()->sync($data['author_ids']);
+        }
+
+        return $book;
     }
 
     public function update(int $id, array $data)
     {
         $book = Book::findOrFail($id);
+
+        if (isset($data['author_ids'])) {
+            $book->authors()->sync($data['author_ids']);
+        }
+        
         $book->update($data);
+
         return $book;
     }
 
