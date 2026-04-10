@@ -84,3 +84,24 @@ if (! function_exists('format_currency')) {
         return $formatter->formatCurrency($amount, $currency);
     }
 }
+
+if(! function_exists(('edit_button'))) {
+    function edit_button(string $url): string
+    {
+        return "<a href='$url' class='btn btn-sm btn-warning'>
+                    <i class='fa fa-edit'></i>
+                </a>";
+    }
+}
+
+if(! function_exists('delete_button')) {
+    function delete_button(string $url): string
+    {
+        return "<form action='$url' method='POST' style='display:inline-block;' onsubmit='return confirm(\"Are you sure you want to delete this item?\")'>
+                    " . csrf_field() . method_field('DELETE') . "
+                    <button type='submit' class='btn btn-sm btn-danger'>
+                        <i class='fa fa-trash'></i>
+                    </button>
+                </form>";
+    }
+}

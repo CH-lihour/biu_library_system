@@ -25,9 +25,9 @@ class CategoryDataTable extends DataTable
             ->addIndexColumn()
             ->editColumn("created_at", fn($query) => $query->created_at->format("d-M-Y"))
             ->addColumn('action' , function($query) {
-                    return view('categories.actions', compact('query'));
-                }
-            )
+                return edit_button(route('categories.edit', $query->id)) . ' ' .
+                delete_button(route('categories.destroy', $query->id));
+            })
             ->rawColumns(['action']);
     }
 

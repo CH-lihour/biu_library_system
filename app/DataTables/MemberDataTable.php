@@ -39,7 +39,8 @@ class MemberDataTable extends DataTable
                 return $query->created_at ? format_date($query->created_at) : '';
             })
             ->addColumn('action', function($query){
-                return view('members.actions', compact('query'));
+                return edit_button(route('members.edit', $query->id)) . ' ' .
+                    delete_button(route('members.destroy', $query->id));
             })
             ->rawColumns(['action', 'status']);
     }

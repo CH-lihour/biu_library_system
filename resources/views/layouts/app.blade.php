@@ -464,6 +464,227 @@
             border-color: #dc3545 !important;
         }
     </style>
+
+    {{-- Dropdown Action --}}
+    <style>
+        :root {
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f5f5f3;
+            --color-background-danger: #fcebeb;
+            --color-background-success: #eaf3de;
+            --color-background-warning: #faeeda;
+            --color-text-primary: #1a1a18;
+            --color-text-secondary: #5f5e5a;
+            --color-text-tertiary: #888780;
+            --color-text-danger: #a32d2d;
+            --color-text-success: #3b6d11;
+            --color-text-warning: #854f0b;
+            --color-border-tertiary: rgba(0, 0, 0, 0.12);
+            --color-border-secondary: rgba(0, 0, 0, 0.25);
+            --color-border-primary: rgba(0, 0, 0, 0.4);
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --font-sans: system-ui, -apple-system, sans-serif;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background-primary: #1e1e1c;
+                --color-background-secondary: #2a2a28;
+                --color-background-danger: #501313;
+                --color-background-success: #173404;
+                --color-background-warning: #412402;
+                --color-text-primary: #f0ede6;
+                --color-text-secondary: #b4b2a9;
+                --color-text-tertiary: #888780;
+                --color-text-danger: #f09595;
+                --color-text-success: #c0dd97;
+                --color-text-warning: #fac775;
+                --color-border-tertiary: rgba(255, 255, 255, 0.1);
+                --color-border-secondary: rgba(255, 255, 255, 0.2);
+                --color-border-primary: rgba(255, 255, 255, 0.35);
+            }
+        }
+
+        .demo-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+            padding: 2rem;
+            background: var(--color-background-secondary);
+            border-radius: var(--border-radius-lg);
+        }
+
+        .demo-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .demo-label {
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .dd-wrap {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dd-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 14px;
+            height: 36px;
+            border-radius: var(--border-radius-md);
+            border: 0.5px solid var(--color-border-secondary);
+            background: var(--color-background-primary);
+            color: var(--color-text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.12s;
+            white-space: nowrap;
+        }
+
+        .dd-trigger:hover {
+            background: var(--color-background-secondary);
+        }
+
+        .dd-trigger.open {
+            border-color: var(--color-border-primary);
+        }
+
+        .dd-trigger svg.chevron {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: var(--color-text-secondary);
+            stroke-width: 1.8;
+            transition: transform 0.18s;
+        }
+
+        .dd-trigger.open svg.chevron {
+            transform: rotate(180deg);
+        }
+
+        .dd-trigger-icon {
+            width: 16px;
+            height: 16px;
+            fill: var(--color-text-secondary);
+            flex-shrink: 0;
+        }
+
+        .dd-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: 200px;
+            background: var(--color-background-primary);
+            border: 0.5px solid var(--color-border-secondary);
+            border-radius: var(--border-radius-lg);
+            padding: 6px;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-6px);
+            pointer-events: none;
+            transition: opacity 0.14s, transform 0.14s;
+        }
+
+        .dd-menu.right {
+            left: auto;
+            right: 0;
+        }
+
+        .dd-menu.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .dd-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: var(--border-radius-md);
+            font-size: 14px;
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .dd-item:hover {
+            background: var(--color-background-secondary);
+        }
+
+        .dd-item.danger {
+            color: var(--color-text-danger);
+        }
+
+        .dd-item.danger:hover {
+            background: var(--color-background-danger);
+        }
+
+        .dd-item svg {
+            width: 15px;
+            height: 15px;
+            fill: var(--color-text-secondary);
+            flex-shrink: 0;
+        }
+
+        .dd-item.danger svg {
+            fill: var(--color-text-danger);
+        }
+
+        .dd-item span.shortcut {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+        }
+
+        .dd-divider {
+            height: 0.5px;
+            background: var(--color-border-tertiary);
+            margin: 5px 0;
+        }
+
+        .dd-section-label {
+            font-size: 11px;
+            color: var(--color-text-tertiary);
+            padding: 6px 10px 2px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--border-radius-md);
+            border: 0.5px solid var(--color-border-secondary);
+            background: var(--color-background-success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+
+        .icon-btn:hover {
+            background: var(--color-background-secondary);
+        }
+
+        .icon-btn svg {
+            width: 15px;
+            height: 15px;
+            fill: var(--color-text-secondary);
+        }
+    </style>
 </head>
 
 <body>
@@ -849,5 +1070,27 @@
                 form.submit();
             });
         });
+    });
+</script>
+
+<script>
+    function toggle(menuId, triggerId) {
+        const menu = document.getElementById(menuId);
+        const trigger = document.getElementById(triggerId);
+        const isOpen = menu.classList.contains('visible');
+        closeAll();
+        if (!isOpen) {
+            menu.classList.add('visible');
+            trigger.classList.add('open');
+        }
+    }
+
+    function closeAll() {
+        document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('visible'));
+        document.querySelectorAll('.dd-trigger, .icon-btn').forEach(t => t.classList.remove('open'));
+    }
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.dd-wrap') && !e.target.closest('.icon-btn')) closeAll();
     });
 </script>

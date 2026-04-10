@@ -36,7 +36,8 @@ class MemberPlanDataTable extends DataTable
                 return format_date($query->created_at);
             })
             ->addColumn('action', function($query){
-                return view('member_plans.actions', compact('query'));
+                return edit_button(route('member_plans.edit', $query->id)) . ' ' .
+                    delete_button(route('member_plans.destroy', $query->id));
             })
             ->rawColumns(['action']);
     }

@@ -21,7 +21,8 @@ class PublisherDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('action' , function($query) {
-                    return view('publishers.actions', compact('query'));
+                    return edit_button(route('publishers.edit', $query->id)) . ' ' .
+                    delete_button(route('publishers.destroy', $query->id));
                 }
             )
             ->editColumn("created_at", fn($query) => $query->created_at->format("d-M-Y"))

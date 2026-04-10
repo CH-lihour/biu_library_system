@@ -47,7 +47,10 @@ Route::middleware('auth')->group(function(){
 
         // === Member Plans ===
         Route::resource('member-plans', MemberPlanController::class);
+    });
 
+    Route::middleware('role:admin,librarian,member')->group(function(){
+        
         // === Borrow Transactions ===
         Route::get('/borrow-books', [BorrowTransactionController::class, 'index'])->name('borrows.index');
         Route::get('/borrow-books/create', [BorrowTransactionController::class, 'create'])->name('borrows.create');

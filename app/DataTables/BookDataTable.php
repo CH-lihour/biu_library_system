@@ -27,7 +27,10 @@ class BookDataTable extends DataTable
             ->addColumn('authors', fn($query) => $query->authors?->pluck('full_name')->join('<br>') ?? '-')
             ->editColumn('cover_image_url', fn($book) => book_preview($book->cover_image_url, $book->title))
             ->editColumn("created_at", fn($query) => format_date($query->created_at))
-            ->addColumn('action', fn($query) => view('books.actions', compact('query')))
+            ->addColumn('action', function($query) {
+                return edit_button(route('books.edit', $query->id)) . ' ' .
+                    delete_button(route('books.destroy', $query->id));
+            })
             ->rawColumns(['cover_image_url', 'action', 'authors']);
     }
 

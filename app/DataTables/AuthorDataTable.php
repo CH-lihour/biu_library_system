@@ -21,7 +21,8 @@ class AuthorDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('action' , function($query) {
-                    return view('authors.actions', compact('query'));
+                    return edit_button(route('authors.edit', $query->id)) . ' ' .
+                    delete_button(route('authors.destroy', $query->id));;
                 }
             )
             ->addColumn('fullname', function($query) {

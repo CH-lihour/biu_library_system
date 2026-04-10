@@ -50,7 +50,7 @@ class BorrowTransactionController extends Controller
                     'cover_image_url' => $bookCopy->book->cover_image_url,
                     'publisher' => optional($bookCopy->book->publisher)->name,
                     'category' => optional($bookCopy->book->category)->name,
-                    'authors' => $bookCopy->book->authors->pluck('name')->implode(', '),
+                    'authors' => $bookCopy->book->authors->pluck('full_name')->implode(', '),
                     'barcode' => $bookCopy->barcode,
                     'status' => $bookCopy->status,
                 ]

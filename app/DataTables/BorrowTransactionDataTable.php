@@ -35,8 +35,11 @@ class BorrowTransactionDataTable extends DataTable
             ->editColumn('created_at', function($row){
                 return format_date($row->created_at);
             })
+            ->addColumn('action', function($row){
+                return view('borrows.actions', compact('row'));
+            })
             ->addIndexColumn()
-            ->rawColumns(['book_cover_image', 'borrow_date', 'due_date', 'return_date']);
+            ->rawColumns(['action', 'book_cover_image', 'borrow_date', 'due_date', 'return_date']);
     }
 
     /**
@@ -56,7 +59,8 @@ class BorrowTransactionDataTable extends DataTable
                 'members.name as member_name',
                 'books.title as book_title',
                 'staff.lastname as handle_by',
-                'books.cover_image_url as book_cover_image'
+                'books.cover_image_url as book_cover_image',
+                'book_copies.barcode as book_barcode'
             );
 
         return $query;
@@ -90,11 +94,17 @@ class BorrowTransactionDataTable extends DataTable
             Column::make('book_cover_image')->title('Cover Image'),
             Column::make('member_name')->title('Member Name'),
             Column::make('book_title')->title('Book Title'),
+            Column::make('book_barcode')->title('Book Barcode'),
             Column::make('handle_by')->title('Handled By'),
             Column::make('borrow_date')->title('Borrow Date'),
             Column::make('due_date')->title('Due Date'),
             Column::make('return_date')->title('Returned Date'),
             Column::make('created_at')->title('Created At'),
+            Column::computed('action')
+                ->exportable(false)
+                ->printable(false)
+                ->width(100)
+                ->addClass('text-center'),
         ];
     }
 

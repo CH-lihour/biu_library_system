@@ -108,6 +108,8 @@
                                 </ul>
                             </div>
                         </li>
+
+                    @endif
                         <li class="nav-item">
                             <a data-bs-toggle="collapse" href="#bookTransactions" class="{{ $isBookTransactionModule ? '' : 'collapsed' }}" aria-expanded="{{ $isBookTransactionModule ? 'true' : 'false' }}">
                                 <i class="fas fa-arrow-circle-right"></i>
@@ -124,7 +126,6 @@
                                 </ul>
                             </div>
                         </li>
-                    @endif
                 @endauth
             </ul>
         </div>
