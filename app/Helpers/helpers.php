@@ -78,10 +78,28 @@ if(! function_exists('image_preview')) {
 }
 
 if (! function_exists('format_currency')) {
-    function format_currency($amount, string $currency ='USD '): string
+    function format_currency($amount, string $currency ='USD'): string
     {
-        $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY);
+        match ($currency) {
+            'USD', 'dollar' => $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY),
+            'KHR' => $formatter = new \NumberFormatter('km_KH', \NumberFormatter::CURRENCY),
+            default => $formatter = new \NumberFormatter('en_US', \NumberFormatter::CURRENCY),
+        };
         return $formatter->formatCurrency($amount, $currency);
+    }
+}
+
+if(! function_exists('format_number')) {
+    function format_number($number): string
+    {
+        return number_format($number);
+    }
+}
+
+if(! function_exists('format_decimal')) {
+    function format_decimal($number, $decimals = 2): string
+    {
+        return number_format($number, $decimals);
     }
 }
 

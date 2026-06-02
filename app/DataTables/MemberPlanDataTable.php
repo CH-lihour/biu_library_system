@@ -26,9 +26,6 @@ class MemberPlanDataTable extends DataTable
             ->editColumn('fine_per_day', function($query){
                 return format_currency($query->fine_per_day);
             })
-            ->editColumn('discount_fee', function($query){
-                return format_currency($query->discount_fee);
-            })
             ->editColumn('description', function($query){
                 return $query->description ?? '-';
             })

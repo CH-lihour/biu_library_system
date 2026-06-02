@@ -25,6 +25,7 @@ class BookDataTable extends DataTable
             ->addColumn('publisher', fn($query) => $query->publisher?->name ?? '-')
             ->addColumn('category', fn($query) => $query->category?->name ?? '-')
             ->addColumn('authors', fn($query) => $query->authors?->pluck('full_name')->join('<br>') ?? '-')
+            ->addColumn('pages', fn($query) => format_number($query->pages))
             ->editColumn('cover_image_url', fn($book) => book_preview($book->cover_image_url, $book->title))
             ->editColumn("created_at", fn($query) => format_date($query->created_at))
             ->addColumn('action', function($query) {
