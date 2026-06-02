@@ -23,7 +23,7 @@ class StoreBorrowRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'book_copy_id' => ['required', 'exists:book_copies,id'],
+            'book_copy_ids' => ['required', 'array', 'min:1'],
             'member_id' => ['required', 'exists:members,id'],
             'borrow_date' => ['required', 'date'],
             'due_date' => ['required', 'date', 'after_or_equal:borrow_date'],
@@ -33,8 +33,9 @@ class StoreBorrowRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'book_copy_id.required' => 'Book copy is required.',
-            'book_copy_id.exists' => 'Selected book copy does not exist.',
+            'book_copy_ids.required' => 'Book copy is required.',
+            'book_copy_ids.array' => 'Invalid book copy selection.',
+            'book_copy_ids.min' => 'At least one book copy must be selected.',
             'member_id.required' => 'Member is required.',
             'member_id.exists' => 'Selected member does not exist.',
             'borrow_date.required' => 'Borrow date is required.',

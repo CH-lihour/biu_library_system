@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <form action="{{ route('borrows.store') }}" method="post">
                         @csrf
-                        <input type="hidden" name="book_copy_id" id="book_copy_id" value="{{ old('book_copy_id') }}">
+                        <div id="selectedBookCopyIds"></div>
                         <div class="row form-group">
                             <label class="col-md-2 align-self-center" for="barcode">Barcode <span class="text-danger">*</span></label>
                             <div class="col-md-7">
@@ -31,28 +31,21 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row align-items-start">
-                                            <div class="col-md-3 text-center mb-3 mb-md-0">
-                                                <img id="bookInfoCover" src="" alt="Book cover"
-                                                    class="img-fluid rounded border d-none"
-                                                    style="max-height: 220px; object-fit: cover;">
-                                            </div>
-                                            <div class="col-md-9">
-                                                <h4 id="bookInfoTitle" class="mb-3"></h4>
-                                                <div class="row g-3">
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2"><strong>Barcode:</strong> <span id="bookInfoBarcode"></span></p>
-                                                        <p class="mb-2"><strong>ISBN:</strong> <span id="bookInfoIsbn"></span></p>
-                                                        <p class="mb-2"><strong>Authors:</strong> <span id="bookInfoAuthors"></span></p>
-                                                        <p class="mb-2"><strong>Publisher:</strong> <span id="bookInfoPublisher"></span></p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <p class="mb-2"><strong>Category:</strong> <span id="bookInfoCategory"></span></p>
-                                                        <p class="mb-2"><strong>Publish Year:</strong> <span id="bookInfoPublishYear"></span></p>
-                                                        <p class="mb-2"><strong>Pages:</strong> <span id="bookInfoPages"></span></p>
-                                                        <p class="mb-2"><strong>Language:</strong> <span id="bookInfoLanguage"></span></p>
-                                                        <p class="mb-0"><strong>Shelf:</strong> <span id="bookInfoShelf"></span></p>
-                                                    </div>
-                                                </div>
+                                            <div class="col-md-12">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width: 20px">#</th>
+                                                            <th>Book Title</th>
+                                                            <th>Barcode</th>
+                                                            <th>ISBN</th>
+                                                            <th style="width: 20px; text-align: center;">Remove</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="bookInfo">
+
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +105,10 @@
         const searchButton = $('#searchBook');
         const formBody = $('#form-body');
         const oldBarcode = @json(old('barcode'));
+        const bookInfo = $('#bookInfo');
+        const selectedBookCopyIds = $('#selectedBookCopyIds');
 
+        // Get book info when pressing Enter key in barcode input
         barcodeInput.on('keypress', function(e) {
             if (e.which === 13) {
                 e.preventDefault();
@@ -121,56 +117,85 @@
 
         });
 
+        // Get
         searchButton.on('click', function() {
             getBookByBarcode()
         });
 
+        // If there's an old barcode value (e.g., after validation error), try to fetch the book info
         $(document).ready(function () {
             if (oldBarcode && oldBarcode.trim() !== '') {
                 getBookByBarcode();
             }
         });
 
+        // Helper function to normalize barcode for comparison
+        function normalizeBarcode(barcode) {
+            return (barcode || '').toString().trim().toLowerCase();
+        }
+
+        // Helper function to refresh row numbers after adding/removing books
+        function refreshRowNumbers() {
+            bookInfo.find('tr').each(function(index) {
+                $(this).find('.row-number').text(index + 1);
+            });
+        }
+
+        // Fill book info in the table and show the card
         function fillBookInfo(book) {
-            $('#book_copy_id').val(book.book_copy_id);
+            const normalizedBarcode = normalizeBarcode(book.barcode); ;
+            const barcodeExists = bookInfo.find('tr').toArray().some(function(row) {
+                return normalizeBarcode($(row).data('barcode')) === normalizedBarcode;
+            });
 
-            $('#bookInfoTitle').text(book.title || '-');
-            $('#bookInfoBarcode').text(book.barcode || '-');
-            $('#bookInfoIsbn').text(book.isbn || '-');
-            $('#bookInfoAuthors').text(book.authors || '-');
-            $('#bookInfoPublisher').text(book.publisher || '-');
-            $('#bookInfoCategory').text(book.category || '-');
-            $('#bookInfoPublishYear').text(book.publish_year || '-');
-            $('#bookInfoPages').text(book.pages || '-');
-            $('#bookInfoLanguage').text(book.language || '-');
-            $('#bookInfoShelf').text(book.shelf_location || '-');
-
-            if (book.cover_image_url) {
-                bookInfoCover.attr('src', '/storage/' + book.cover_image_url).removeClass('d-none');
-            } else {
-                bookInfoCover.attr('src', '/assets/img/books/no_cover.jpg').removeClass('d-none');
+            if (barcodeExists) {
+                showFlash('warning', 'This barcode is already added.', 'Warning');
+                barcodeInput.val('');
+                barcodeInput.focus();
+                return;
             }
+
+            $(bookInfo).append(`
+                <tr data-barcode="${book.barcode || ''}" data-book-copy-id="${book.book_copy_id}">
+                    <td class="row-number"></td>
+                    <td>${book.title || '-'}</td>
+                    <td>${book.barcode || '-'}</td>
+                    <td>${book.isbn || '-'}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeBook(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+            selectedBookCopyIds.append(`
+                <input type="hidden" name="book_copy_ids[]" value="${book.book_copy_id}" data-book-copy-id="${book.book_copy_id}">
+            `);
+
+            refreshRowNumbers();
+
+            $('#book_copy_ids').val(book.book_copy_id);
 
             bookInfoCard.removeClass('d-none');
             cardAction.removeClass('d-none');
             formBody.removeClass('d-none');
         }
 
+        // Reset book info and hide the card
         function resetBookInfo() {
             cardAction.addClass('d-none');
             formBody.addClass('d-none');
             bookInfoCard.addClass('d-none');
-
-            $('#book_copy_id').val('');
         }
 
+        // Fetch book info by barcode via AJAX
         function getBookByBarcode() {
 
             const barcode = barcodeInput.val().trim();
 
             if (barcode === '') {
                 showFlash('warning', 'Please enter a barcode.', 'Warning');
-                resetBookInfo();
                 return;
             }
 
@@ -186,7 +211,6 @@
                         fillBookInfo(response.book);
                     } else {
                         showFlash('error', response.message ?? 'Failed', 'Error');
-                        resetBookInfo();
                     }
                 },
                 error: function(xhr) {
@@ -195,6 +219,23 @@
                     resetBookInfo();
                 }
             });
+        }
+
+        // Remove book from the table
+        function removeBook(button) {
+            const row = $(button).closest('tr').remove();
+            const bookCopyId = String(row.data('book-copy-id') ?? '').trim();
+
+            selectedBookCopyIds.find(`input[data-book-copy-id="${bookCopyId}"]`).remove();
+
+            refreshRowNumbers();
+
+            if ($('#bookInfo tr').length === 0) {
+                resetBookInfo();
+            }
+            
+            barcodeInput.val('');
+            barcodeInput.focus();
         }
     </script>
 @endpush

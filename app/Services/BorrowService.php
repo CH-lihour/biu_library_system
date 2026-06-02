@@ -24,4 +24,9 @@ class BorrowService
     {
         $this->borrowRepository->createBorrowTransaction($data);
     }
+
+    public function returnBook($borrowId)
+    {
+        $this->borrowRepository->returnBook($borrowId);
+    }
 }

@@ -27,24 +27,27 @@ class BorrowRepository implements BorrowRepositoryInterface
     {
         DB::transaction(function () use ($data) {
 
-            BorrowTransaction::create([
-                'book_copy_id' => $data['book_copy_id'],
-                'member_id' => $data['member_id'],
-                'borrow_date' => $data['borrow_date'],
-                'due_date' => $data['due_date'],
-                'staff_id' => auth()->id(),
-            ]);
+            foreach ($data['book_copy_ids'] as $bookCopyId) {
+                BorrowTransaction::create([
+                    'book_copy_id' => $bookCopyId,
+                    'member_id' => $data['member_id'],
+                    'borrow_date' => $data['borrow_date'],
+                    'due_date' => $data['due_date'],
+                    'staff_id' => auth()->id(),
+                ]);
 
-            BookCopy::where('id', $data['book_copy_id'])->update(['status' => 'borrowed']);
-
-            // foreach ($data['book_copy_id'] as $bookCopyId) {
-            //     BorrowTransaction::create([
-            //         'borrow_transaction_id' => $borrowTransaction->id,
-            //         'book_copy_id' => $bookCopyId,
-            //     ]);
-
-            //     BookCopy::where('id', $bookCopyId)->update(['status' => 'borrowed']);
-            // }
+                BookCopy::where('id', $bookCopyId)->update(['status' => 'borrowed']);
+            }
         });
+    }
+
+    public function returnBook($borrowId)
+    {
+        $borrowTransaction = BorrowTransaction::findOrFail($borrowId);
+        $borrowTransaction->update([
+            'return_date' => now(),
+        ]);
+
+        BookCopy::where('id', $borrowTransaction->book_copy_id)->update(['status' => 'available']);
     }
 }

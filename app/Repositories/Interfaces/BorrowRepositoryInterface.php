@@ -9,4 +9,6 @@ interface BorrowRepositoryInterface
     public function getActiveMembers();
 
     public function createBorrowTransaction($data);
+
+    public function returnBook($borrowId);
 }

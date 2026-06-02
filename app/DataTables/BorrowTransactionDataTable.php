@@ -53,12 +53,12 @@ class BorrowTransactionDataTable extends DataTable
             ->join('members', 'borrow_transactions.member_id', '=', 'members.id')
             ->join('book_copies', 'borrow_transactions.book_copy_id', '=', 'book_copies.id')
             ->join('books', 'book_copies.book_id', '=', 'books.id')
-            ->join('staff', 'borrow_transactions.staff_id', '=', 'staff.id')
+            ->join('users', 'borrow_transactions.staff_id', '=', 'users.id')
             ->select(
                 'borrow_transactions.*',
                 'members.name as member_name',
                 'books.title as book_title',
-                'staff.lastname as handle_by',
+                'users.name as handle_by',
                 'books.cover_image_url as book_cover_image',
                 'book_copies.barcode as book_barcode'
             );
@@ -91,14 +91,16 @@ class BorrowTransactionDataTable extends DataTable
                   ->printable(false)
                   ->width(60)
                   ->addClass('text-center'),
-            Column::make('book_cover_image')->title('Cover Image'),
+            Column::make('book_cover_image')
+                ->title('Cover Image')
+                ->addClass('text-center'),
             Column::make('member_name')->title('Member Name'),
             Column::make('book_title')->title('Book Title'),
             Column::make('book_barcode')->title('Book Barcode'),
-            Column::make('handle_by')->title('Handled By'),
             Column::make('borrow_date')->title('Borrow Date'),
             Column::make('due_date')->title('Due Date'),
             Column::make('return_date')->title('Returned Date'),
+            Column::make('handle_by')->title('Handled By'),
             Column::make('created_at')->title('Created At'),
             Column::computed('action')
                 ->exportable(false)

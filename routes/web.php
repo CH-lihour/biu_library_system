@@ -50,11 +50,12 @@ Route::middleware('auth')->group(function(){
     });
 
     Route::middleware('role:admin,librarian,member')->group(function(){
-        
+
         // === Borrow Transactions ===
         Route::get('/borrow-books', [BorrowTransactionController::class, 'index'])->name('borrows.index');
         Route::get('/borrow-books/create', [BorrowTransactionController::class, 'create'])->name('borrows.create');
         Route::post('/borrow-books', [BorrowTransactionController::class, 'store'])->name('borrows.store');
         Route::post('/borrow-books/get-book-by-barcode', [BorrowTransactionController::class, 'getBookByBarcode'])->name('borrows.getBookByBarcode');
+        Route::post('/borrow-books/{borrow}/return', [BorrowTransactionController::class, 'return'])->name('borrows.return');
     });
 });

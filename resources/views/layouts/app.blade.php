@@ -489,20 +489,21 @@
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --color-background-primary: #1e1e1c;
-                --color-background-secondary: #2a2a28;
-                --color-background-danger: #501313;
-                --color-background-success: #173404;
-                --color-background-warning: #412402;
-                --color-text-primary: #f0ede6;
-                --color-text-secondary: #b4b2a9;
+                --color-background-primary: #ffffff;
+                --color-background-secondary: #f5f5f3;
+                --color-background-danger: #fcebeb;
+                --color-background-success: #eaf3de;
+                --color-background-warning: #faeeda;
+                --color-background-warning: #faeeda;
+                --color-text-primary: #1a1a18;
+                --color-text-secondary: #5f5e5a;
                 --color-text-tertiary: #888780;
-                --color-text-danger: #f09595;
-                --color-text-success: #c0dd97;
-                --color-text-warning: #fac775;
-                --color-border-tertiary: rgba(255, 255, 255, 0.1);
-                --color-border-secondary: rgba(255, 255, 255, 0.2);
-                --color-border-primary: rgba(255, 255, 255, 0.35);
+                --color-text-danger: #a32d2d;
+                --color-text-success: #3b6d11;
+                --color-text-warning: #854f0b;
+                --color-border-tertiary: rgba(0, 0, 0, 0.12);
+                --color-border-secondary: rgba(0, 0, 0, 0.25);
+                --color-border-primary: rgba(0, 0, 0, 0.4);
             }
         }
 
@@ -667,7 +668,7 @@
             height: 32px;
             border-radius: var(--border-radius-md);
             border: 0.5px solid var(--color-border-secondary);
-            background: var(--color-background-success);
+            background: var(--color-background-primary);
             display: flex;
             align-items: center;
             justify-content: center;

@@ -99,7 +99,7 @@ if(! function_exists('delete_button')) {
     {
         return "<form action='$url' method='POST' style='display:inline-block;' onsubmit='return confirm(\"Are you sure you want to delete this item?\")'>
                     " . csrf_field() . method_field('DELETE') . "
-                    <button type='submit' class='btn btn-sm btn-danger'>
+                    <button type='submit' class='btn btn-sm btn-danger js-delete-btn'>
                         <i class='fa fa-trash'></i>
                     </button>
                 </form>";

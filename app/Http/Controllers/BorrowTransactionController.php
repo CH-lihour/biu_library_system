@@ -62,4 +62,10 @@ class BorrowTransactionController extends Controller
             'message' => 'Book not found or not available'
         ]);
     }
+
+    public function return($id)
+    {
+        $this->borrowService->returnBook($id);
+        return to_route('borrows.index')->with('success', 'Book returned successfully.');
+    }
 }
