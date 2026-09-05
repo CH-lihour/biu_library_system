@@ -17,8 +17,9 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="name">Books <span class="text-danger">*</span></label>
-                                <select name="book_id" id="book_id" class="form-select">
-                                    <option disabled selected>-- Select Book --</option>
+                                <select name="book_id" id="book_id" class="form-select js-select2"
+                                    data-placeholder="Select book" data-allow-clear="1">
+                                    <option value=""></option>
                                     @foreach ($books as $book)
                                         <option value="{{ $book->id }}" {{ old('book_id', $bookCopy->book_id) == $book->id ? 'selected' : '' }}>
                                             {{ $book->title }}
@@ -31,10 +32,9 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <label for="name">Status <span class="text-danger">*</span></label>
-                                <select name="status" id="status" class="form-select">
-                                    <option disabled {{ old('status', $bookCopy->status?->value ?? $bookCopy->status) ? '' : 'selected' }}>
-                                        -- Select Status --
-                                    </option>
+                                <select name="status" id="status" class="form-select js-select2"
+                                    data-placeholder="Select status" data-allow-clear="1">
+                                    <option value=""></option>
 
                                     @foreach ($statuses as $status)
                                         <option value="{{ $status->value }}" {{ old('status', $bookCopy->status?->value ?? $bookCopy->status) === $status->value ? 'selected' : '' }}>

@@ -56,7 +56,7 @@ if (! function_exists('format_time')) {
 if(! function_exists('book_preview')) {
     function book_preview(?string $url, string $title = 'Image Preview'): string
     {
-        $src = $url ? asset('storage/' . $url) : asset('assets/img/books/no_cover.jpg');
+        $src = $url ? asset('storage/' . $url) : asset('assets/img/books/no_image.png');
         $alt = $url ? $title : 'No Cover';
 
         return '<a href="javascript:void(0)" class="js-image-preview" data-image="' . e($src) . '" data-title="' . e($alt) . '">

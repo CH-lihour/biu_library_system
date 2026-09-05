@@ -115,7 +115,14 @@
                                 <div class="col-md-12 form-group">
                                     <label class="upload-label" for="cover_image_url">Cover Image</label>
 
-                                    <div class="upload-zone" id="uploadZone">
+                                    @php
+                                        $existingCover = $book->cover_image_url
+                                            ? asset('storage/' . $book->cover_image_url)
+                                            : null;
+                                    @endphp
+
+                                    <div class="upload-zone" id="uploadZone"
+                                        @if ($existingCover) style="display:none;" @endif>
                                         <input type="file" name="cover_image_url" id="cover_image_url" accept="image/*" />
                                         <div class="upload-icon">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -130,11 +137,13 @@
                                         <p class="upload-sub upload-hint">PNG, JPG, WEBP up to 10MB</p>
                                     </div>
 
-                                    <div class="preview-wrap" id="previewWrap" style="display:none;">
+                                    <div class="preview-wrap" id="previewWrap"
+                                        @unless ($existingCover) style="display:none;" @endunless>
                                         <div class="preview-frame">
-                                            <img id="image_preview" src="#" alt="Image Preview" />
+                                            <img id="image_preview" src="{{ $existingCover ?? '#' }}"
+                                                alt="{{ $book->title }} cover" />
                                             <div class="preview-overlay">
-                                                <p class="preview-name" id="previewName"></p>
+                                                <p class="preview-name" id="previewName">{{ $existingCover ? 'Current cover' : '' }}</p>
                                                 <button class="preview-remove" id="removeBtn" type="button">
                                                     <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
                                                         stroke-linecap="round" fill="none" width="13" height="13">

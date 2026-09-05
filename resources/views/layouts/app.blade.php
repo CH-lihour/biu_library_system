@@ -7,6 +7,21 @@
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="{{ asset('assets/img/logos/biu_logo.svg') }}" type="image/x-icon" />
 
+    {{-- Theme bootstrap. Must run before first paint, otherwise every page load
+         flashes white before the dark stylesheet is applied. --}}
+    <script>
+        (function () {
+            var theme = 'light';
+            try {
+                theme = localStorage.getItem('biu-theme')
+                    || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            } catch (e) {
+                /* storage unavailable — fall back to light */
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <!-- Fonts and icons -->
     <script src="{{ asset('assets/js/plugin/webfont/webfont.min.js') }}"></script>
     <script>
@@ -342,7 +357,8 @@
             height: 38px;
             border: 1px solid #ced4da;
             border-radius: .375rem;
-            padding: .375rem .75rem;
+            /* Right padding reserves room for the absolutely-positioned arrow. */
+            padding: .375rem 1.75rem .375rem .75rem;
             display: flex;
             align-items: center;
             background-color: #fff;
@@ -353,6 +369,26 @@
             color: #212529;
             line-height: normal;
             padding-left: 0;
+            padding-right: 0;
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Select2 prepends the clear button to .select2-selection itself, not into
+           __rendered, so here it is a flex item and its own `float: right` is inert.
+           Order it after the label instead. */
+        .select2-container--default .select2-selection--single .select2-selection__clear {
+            float: none;
+            order: 2;
+            margin: 0 0 0 .5rem;
+            padding: 0;
+            height: auto;
+            line-height: inherit;
+            background: transparent;
+            border: none;
         }
 
         .select2-container--default .select2-selection--single .select2-selection__placeholder {
@@ -372,7 +408,15 @@
             background-color: #fff;
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            gap: .25rem;
             transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        /* Clear button is absolutely positioned at right: 0 by Select2; keep it
+           off the edge and stop the pills running underneath it. */
+        .select2-container--default .select2-selection--multiple.select2-selection--clearable {
+            padding-right: 1.75rem;
         }
 
         .select2-container--default .select2-selection--multiple .select2-selection__rendered {
@@ -380,7 +424,12 @@
             flex-wrap: wrap;
             align-items: center;
             gap: .25rem;
-            width: 100%;
+            /* `width: 100%` here made the empty list claim the entire row, pushing
+               the search field (and its placeholder) to the right. Size to the
+               pills instead and let the search field take the remainder. */
+            width: auto;
+            flex: 0 1 auto;
+            max-width: 100%;
             padding: 0;
             margin: 0;
             color: #212529;
@@ -422,11 +471,18 @@
         .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
             margin-top: 0;
             color: #6c757d;
-            flex: 1 1 auto;
+            /* Must not share the row with the search field, or the text gets
+               pushed to the middle. Sit first, at natural width. */
+            flex: 0 0 auto;
+            order: -1;
         }
 
         .select2-container--default .select2-selection--multiple .select2-selection__clear {
-            margin-right: .35rem;
+            /* Select2 already pins this with position: absolute; right: 0 — only
+               the spacing needs restating. */
+            float: none;
+            margin: 0 .5rem 0 0;
+            padding: 0;
         }
 
         .select2-container--default .select2-selection--multiple .select2-search--inline {
@@ -487,98 +543,9 @@
             --font-sans: system-ui, -apple-system, sans-serif;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --color-background-primary: #ffffff;
-                --color-background-secondary: #f5f5f3;
-                --color-background-danger: #fcebeb;
-                --color-background-success: #eaf3de;
-                --color-background-warning: #faeeda;
-                --color-background-warning: #faeeda;
-                --color-text-primary: #1a1a18;
-                --color-text-secondary: #5f5e5a;
-                --color-text-tertiary: #888780;
-                --color-text-danger: #a32d2d;
-                --color-text-success: #3b6d11;
-                --color-text-warning: #854f0b;
-                --color-border-tertiary: rgba(0, 0, 0, 0.12);
-                --color-border-secondary: rgba(0, 0, 0, 0.25);
-                --color-border-primary: rgba(0, 0, 0, 0.4);
-            }
-        }
-
-        .demo-wrap {
-            display: flex;
-            flex-direction: column;
-            gap: 48px;
-            padding: 2rem;
-            background: var(--color-background-secondary);
-            border-radius: var(--border-radius-lg);
-        }
-
-        .demo-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .demo-label {
-            font-size: 12px;
-            color: var(--color-text-tertiary);
-            margin-bottom: 10px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
         .dd-wrap {
             position: relative;
             display: inline-block;
-        }
-
-        .dd-trigger {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 14px;
-            height: 36px;
-            border-radius: var(--border-radius-md);
-            border: 0.5px solid var(--color-border-secondary);
-            background: var(--color-background-primary);
-            color: var(--color-text-primary);
-            font-size: 14px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.12s;
-            white-space: nowrap;
-        }
-
-        .dd-trigger:hover {
-            background: var(--color-background-secondary);
-        }
-
-        .dd-trigger.open {
-            border-color: var(--color-border-primary);
-        }
-
-        .dd-trigger svg.chevron {
-            width: 14px;
-            height: 14px;
-            fill: none;
-            stroke: var(--color-text-secondary);
-            stroke-width: 1.8;
-            transition: transform 0.18s;
-        }
-
-        .dd-trigger.open svg.chevron {
-            transform: rotate(180deg);
-        }
-
-        .dd-trigger-icon {
-            width: 16px;
-            height: 16px;
-            fill: var(--color-text-secondary);
-            flex-shrink: 0;
         }
 
         .dd-menu {
@@ -643,24 +610,10 @@
             fill: var(--color-text-danger);
         }
 
-        .dd-item span.shortcut {
-            margin-left: auto;
-            font-size: 12px;
-            color: var(--color-text-tertiary);
-        }
-
         .dd-divider {
             height: 0.5px;
             background: var(--color-border-tertiary);
             margin: 5px 0;
-        }
-
-        .dd-section-label {
-            font-size: 11px;
-            color: var(--color-text-tertiary);
-            padding: 6px 10px 2px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
         }
 
         .icon-btn {
@@ -686,6 +639,27 @@
             fill: var(--color-text-secondary);
         }
     </style>
+
+    {{-- DataTables horizontal scrolling --}}
+    <style>
+        /* DataTables builds its wrapper inside .table-responsive, so scrolling
+           the container dragged the info line and pagination along with the
+           table. Give the table its own scroller instead. */
+        .dt-scroll-x {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        /* With the table scrolling on its own, the outer container must stop
+           scrolling or both would. Keyed off a class the init hook adds, so
+           plain .table-responsive tables elsewhere are untouched. */
+        .table-responsive.dt-has-scroller {
+            overflow: visible;
+        }
+    </style>
+
+    {{-- Dark mode overrides — loaded last so it can override everything above --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/dark-mode.css') }}" />
 </head>
 
 <body>
@@ -796,15 +770,9 @@
     <!-- Datatables -->
     <script src="{{ asset('assets/js/plugin/datatables/datatables.min.js') }}"></script>
 
-    <!-- Bootstrap Notify -->
-    <script src="{{ asset('assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
-
     <!-- jQuery Vector Maps -->
     <script src="{{ asset('assets/js/plugin/jsvectormap/jsvectormap.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugin/jsvectormap/world.js') }}"></script>
-
-    <!-- Sweet Alert -->
-    <script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
 
     <!-- Kaiadmin JS -->
     <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
@@ -843,25 +811,51 @@
             lineColor: "#177dff",
             fillColor: "rgba(23, 125, 255, 0.14)",
         });
-
-        $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-            type: "line",
-            height: "70",
-            width: "100%",
-            lineWidth: "2",
-            lineColor: "#f3545d",
-            fillColor: "rgba(243, 84, 93, .14)",
-        });
-
-        $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-            type: "line",
-            height: "70",
-            width: "100%",
-            lineWidth: "2",
-            lineColor: "#ffa534",
-            fillColor: "rgba(255, 165, 52, .14)",
-        });
     </script>
+    <!-- Dark Mode Toggle -->
+    <script src="{{ asset('assets/js/dark-mode.js') }}"></script>
+
+    <script>
+        // Keep the DataTables chrome (search, buttons, info, pagination) fixed
+        // while only the table scrolls sideways: give the table its own scroll
+        // container and stop the outer .table-responsive scrolling.
+        (function () {
+            function isolateTableScroll(table) {
+                var $table = $(table);
+
+                if (!$table.length || $table.parent().hasClass('dt-scroll-x')) {
+                    return;
+                }
+
+                $table.wrap('<div class="dt-scroll-x"></div>');
+                $table.closest('.table-responsive').addClass('dt-has-scroller');
+            }
+
+            // init.dt is the documented hook; draw.dt also fires on first
+            // render, so between them the fix lands as soon as a table exists.
+            $(document).on('init.dt draw.dt', function (event, settings) {
+                isolateTableScroll(settings.nTable);
+            });
+
+            // Fallback that depends on no DataTables event at all. This ready
+            // handler is bound before the per-page table scripts pushed onto
+            // the scripts stack below, so it runs first; the setTimeout defers
+            // the sweep past every other ready handler, by which point the
+            // tables are initialised.
+            //
+            // NB: never write a Blade directive in here, not even inside a JS
+            // comment. Blade compiles the file as text and would expand it,
+            // injecting markup (and a closing script tag) into this block.
+            $(function () {
+                setTimeout(function () {
+                    $('table.dataTable').each(function () {
+                        isolateTableScroll(this);
+                    });
+                }, 0);
+            });
+        })();
+    </script>
+
     @stack('scripts')
 </body>
 

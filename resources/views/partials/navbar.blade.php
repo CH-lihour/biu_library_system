@@ -226,6 +226,14 @@
                 @endif
             @endauth
 
+            <li class="nav-item topbar-icon d-flex align-items-center">
+                <button type="button" class="theme-toggle" aria-pressed="false"
+                    aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <i class="fas fa-moon theme-toggle-moon"></i>
+                    <i class="fas fa-sun theme-toggle-sun"></i>
+                </button>
+            </li>
+
             <li class="nav-item topbar-user dropdown hidden-caret">
                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                     <div class="avatar-sm">
