@@ -1,0 +1,161 @@
+﻿Issue Id,Parent Id,Issue Type,Summary,Description,Priority,Labels,Story Points,Sprint,Status
+1,,Epic,[AUTH] Authentication & Role-Based Access,"Session login/logout, password reset, staff account management and role middleware (admin, librarian, member).",Highest,epic-AUTH,,,
+2,,Epic,[CAT] Catalog Management,"Books, physical copies (barcodes), authors, publishers and categories with server-side DataTables.",Highest,epic-CAT,,,
+3,,Epic,[MEM] Membership Management,"Members, membership plans, expiry handling and the member self-service portal.",High,epic-MEM,,,
+4,,Epic,[CIRC] Circulation (Borrow / Return),"Barcode borrow, return, due-date rules, overdue detection, fines, lost/damaged handling, renewals.",Highest,epic-CIRC,,,
+5,,Epic,[RES] Reservations,Members place holds on unavailable titles; FIFO allocation on return; hold expiry.,Medium,epic-RES,,,
+6,,Epic,[REV] Reviews & Ratings,Members rate and review titles they have borrowed; staff moderation.,Low,epic-REV,,,
+7,,Epic,[NOTI] Notifications,In-app and email reminders for due/overdue loans and ready reservations.,Medium,epic-NOTI,,,
+8,,Epic,[AUD] Audit Logging,"Track create/update/delete on core tables with old/new values, user and IP.",Medium,epic-AUD,,,
+9,,Epic,[DASH] Dashboard & Reports,"Staff KPI dashboard, charts, and exportable reports.",High,epic-DASH,,,
+10,,Epic,"[QA] Quality, Security & DevOps","Test suite, CI pipeline, environments, security review and release.",High,epic-QA,,,
+101,1,Story,"As a user, I can sign in with email and password","As a library user I want to sign in so that I can access features for my role.
+
+Acceptance criteria:
+- Valid credentials redirect to the role's home page
+- Invalid credentials show a generic error and keep the email filled
+- Guest-only middleware on /login; auth middleware on everything else",Highest,FR-AUTH-01 FR-AUTH-03 epic-AUTH,3,BIULMS Sprint 0,Done
+102,1,Story,"As an admin, routes are restricted by role","RoleMiddleware aliased as `role` restricts route groups.
+
+Acceptance criteria:
+- CRUD resources require role:admin,librarian
+- Borrow/return requires role:admin,librarian,member
+- Unauthorized access returns 403",Highest,FR-AUTH-02 epic-AUTH,3,BIULMS Sprint 0,Done
+103,1,Story,"As a user, I can reset a forgotten password","Acceptance criteria:
+- Forgot-password form sends a signed, expiring token by email
+- Token stored hashed in users.reset_token and invalidated after use
+- New password must meet policy (min 8 chars)",High,FR-AUTH-04 epic-AUTH,5,BIULMS Sprint 5,To Do
+104,1,Story,"As an admin, I can manage staff user accounts","Acceptance criteria:
+- List, create, edit, soft-delete users with role admin/librarian
+- Creating a staff user also creates the linked staff record
+- Admin cannot delete their own account",High,FR-AUTH-05 epic-AUTH,5,BIULMS Sprint 4,To Do
+105,1,Task,Record last_login on successful sign-in,Update users.last_login in LoginController@store after Auth::attempt succeeds.,Low,FR-AUTH-06 epic-AUTH,1,BIULMS Sprint 3,To Do
+106,2,Story,"As a librarian, I can manage books with cover images","Acceptance criteria:
+- Create/edit/delete book with unique ISBN, title, publisher, category, many authors, year, pages, language, shelf location
+- Cover image uploaded to public disk books/covers and previewed in list
+- Soft delete keeps history",Highest,FR-CAT-01 epic-CAT,8,BIULMS Sprint 1,Done
+107,2,Story,"As a librarian, I can manage authors, publishers and categories","Acceptance criteria:
+- CRUD for each entity with validation (unique author email, unique category slug)
+- Each list page is a server-side DataTable",High,FR-CAT-02 FR-CAT-04 epic-CAT,5,BIULMS Sprint 1,Done
+108,2,Story,"As a librarian, I can manage physical copies with barcodes","Acceptance criteria:
+- Add copies to a book with unique barcode
+- Status is one of available, borrowed, damaged, lost (BookCopyStatus enum)
+- Status badge rendered with status_badge() helper",Highest,FR-CAT-03 epic-CAT,5,BIULMS Sprint 1,Done
+109,2,Story,"As a librarian, I can view a book detail page with copy availability","Acceptance criteria:
+- Shows counts per copy status
+- Lists copies currently on loan with member and due date
+- Shows average rating once reviews exist",Medium,FR-CAT-05 epic-CAT,3,BIULMS Sprint 4,To Do
+110,2,Story,"As a librarian, I can bulk import books from CSV","Acceptance criteria:
+- Upload CSV with ISBN, title, authors, publisher, category, copies
+- Dry-run preview with row-level errors before commit
+- Import runs in a single transaction per batch",Low,FR-CAT-06 epic-CAT,8,BIULMS Sprint 7,To Do
+111,2,Story,"As a librarian, I can print barcode labels for copies","Acceptance criteria:
+- Select copies and generate a printable PDF sheet of Code128 labels",Low,FR-CAT-07 epic-CAT,3,BIULMS Sprint 7,To Do
+112,2,Bug,book_authors / reviews / audit_logs lack FK constraints and use mismatched int types,"G6: these tables use unsignedInteger columns with no foreign keys while parent PKs are bigint.
+
+Fix: new migration converting to foreignId()->constrained() with appropriate onDelete; add composite PK on book_authors.",Medium,NFR-03 epic-CAT,3,BIULMS Sprint 3,To Do
+113,3,Story,"As a librarian, I can register and manage members","Acceptance criteria:
+- Member code, name, email, phone, address, plan, join/expiry dates, status
+- Status one of active, inactive, suspend, expired",Highest,FR-MEM-01 epic-MEM,5,BIULMS Sprint 2,Done
+114,3,Story,"As an admin, I can manage membership plans","Acceptance criteria:
+- Plan has name, loan_duration_days, fine_per_day, discount_fee, description
+- Deleting a plan sets members.plan_id to null",High,FR-MEM-02 epic-MEM,3,BIULMS Sprint 2,Done
+115,3,Story,"As the system, I expire members past their expiry date daily","Acceptance criteria:
+- Scheduled command members:expire runs daily at 00:15
+- Sets status=expired where expiry_date < today and status=active
+- Writes an audit log entry per change",Medium,FR-MEM-03 BR-04 epic-MEM,3,BIULMS Sprint 4,To Do
+116,3,Story,"As a librarian, I can view a member profile with loans and fines","Acceptance criteria:
+- Tabs: active loans, history, reservations, fines owed
+- Quick action: start a borrow for this member",Medium,FR-MEM-04 epic-MEM,5,BIULMS Sprint 4,To Do
+117,3,Story,"As a member, I have a self-service portal home","Acceptance criteria:
+- Link members to users (members.user_id) so members can sign in
+- Home lists active loans with due dates and overdue highlight, reservations, unread notifications",High,FR-MEM-05 FR-DASH-04 epic-MEM,8,BIULMS Sprint 4,To Do
+118,4,Story,"As a librarian, I can look up an available copy by barcode","Acceptance criteria:
+- POST /borrow-books/get-book-by-barcode returns book, authors, publisher, category for an available copy
+- Unknown or unavailable barcode shows an inline error",Highest,FR-CIRC-01 epic-CIRC,3,BIULMS Sprint 2,Done
+119,4,Story,"As a librarian, I can borrow multiple copies for a member in one transaction","Acceptance criteria:
+- One borrow_transactions row per copy; copies flip to borrowed
+- All writes in DB::transaction",Highest,FR-CIRC-02 BR-01 epic-CIRC,5,BIULMS Sprint 2,Done
+120,4,Story,"As a librarian, the due date defaults from the member plan","G4.
+Acceptance criteria:
+- Selecting a member fills due_date = borrow_date + plan.loan_duration_days
+- Staff may override; server validates due_date >= borrow_date",Highest,FR-CIRC-03 BR-02 epic-CIRC,3,BIULMS Sprint 3,To Do
+121,4,Story,"As the system, I block borrowing for ineligible members","G5.
+Acceptance criteria:
+- Reject when member.status != active or expiry_date < today
+- Reject when active loans + requested copies > 5 (config library.max_loans)
+- Clear validation message on the borrow form",Highest,FR-CIRC-04 BR-04 BR-05 epic-CIRC,5,BIULMS Sprint 3,To Do
+122,4,Bug,Returning a book does not set loan status to returned,"G1: BorrowRepository::returnBook updates return_date only; status stays active.
+
+Expected: status = returned (or overdue->returned) together with return_date.",Highest,FR-CIRC-05 epic-CIRC,2,BIULMS Sprint 3,To Do
+123,4,Bug,Return is not atomic,"G2: returnBook updates borrow_transactions and book_copies without DB::transaction.
+
+Fix: wrap in DB::transaction and lock the transaction row (lockForUpdate) to prevent double return.",High,FR-CIRC-05 NFR-03 epic-CIRC,2,BIULMS Sprint 3,To Do
+124,4,Bug,staff_id on borrow transactions stores a users.id instead of staff.id,"G3: createBorrowTransaction sets staff_id : auth()->id(); FK targets staff.id.
+
+Fix: resolve auth()->user()->staff?->id; null when a member self-borrows.",High,FR-CIRC-02 epic-CIRC,2,BIULMS Sprint 3,To Do
+125,4,Story,"As the system, I flag overdue loans daily","Acceptance criteria:
+- Scheduled command loans:mark-overdue sets status=overdue where due_date < today and return_date is null
+- Dashboard overdue tile reflects result",Highest,FR-CIRC-06 epic-CIRC,3,BIULMS Sprint 4,To Do
+126,4,Story,"As a librarian, I see the fine due when returning an overdue book","Acceptance criteria:
+- Fine = max(0, return_date - due_date in days) * plan.fine_per_day
+- Shown on return confirmation and member profile
+- Stored on the transaction (new column fine_amount)",High,FR-CIRC-07 BR-03 epic-CIRC,5,BIULMS Sprint 4,To Do
+127,4,Story,"As a librarian, I can mark a copy lost or damaged at return","Acceptance criteria:
+- Return dialog offers condition: good, damaged, lost
+- Copy status and loan status updated accordingly",Medium,FR-CIRC-08 epic-CIRC,3,BIULMS Sprint 5,To Do
+128,4,Story,"As a member, I can renew a loan once","Acceptance criteria:
+- Allowed once, only if not overdue and no pending reservation on the title
+- New due date = current due date + plan days",Low,FR-CIRC-09 epic-CIRC,3,BIULMS Sprint 6,To Do
+129,5,Story,"As a member, I can reserve a title with no available copies","Acceptance criteria:
+- Reserve button visible only when available copies = 0
+- One pending reservation per member per title",Medium,FR-RES-01 BR-04 epic-RES,5,BIULMS Sprint 5,To Do
+130,5,Story,"As the system, I allocate a returned copy to the next reservation","Acceptance criteria:
+- On return, oldest pending reservation for the title gets notified_at=now, expires_at=now+3 days
+- Copy held (not borrowable by others) until expiry",Medium,FR-RES-02 BR-06 epic-RES,5,BIULMS Sprint 5,To Do
+131,5,Story,"As a member or librarian, I can cancel a reservation; expired holds auto-expire","Acceptance criteria:
+- Cancel sets status=cancelled
+- Scheduled job sets status=expired after expires_at and releases the copy to the next in queue",Medium,FR-RES-03 epic-RES,3,BIULMS Sprint 5,To Do
+132,6,Story,"As a member, I can rate and review a book I have borrowed","Acceptance criteria:
+- Rating 1-5 required, text optional up to 2000 chars
+- Only after a returned loan of that title (BR-07); one review per member per book",Low,FR-REV-01 BR-07 epic-REV,3,BIULMS Sprint 6,To Do
+133,6,Story,"As a librarian, I can moderate reviews","Acceptance criteria:
+- Book page shows average rating and reviews
+- Staff can soft-delete a review with reason",Low,FR-REV-02 epic-REV,2,BIULMS Sprint 6,To Do
+134,7,Story,"As a member, I get reminders before and after my due date","Acceptance criteria:
+- Queued job sends email + creates notifications row 2 days before due and on first overdue day
+- No duplicate reminders for the same loan/event",Medium,FR-NOTI-01 epic-NOTI,5,BIULMS Sprint 5,To Do
+135,7,Story,"As a member, I am notified when my reservation is ready","Acceptance criteria:
+- Notification includes title, pickup deadline (expires_at)",Medium,FR-NOTI-02 epic-NOTI,2,BIULMS Sprint 5,To Do
+136,7,Story,"As a user, I see unread notifications in the navbar bell","Acceptance criteria:
+- Replace theme demo dropdown with real data
+- Badge shows unread count; opening an item sets read_at",Medium,FR-NOTI-03 epic-NOTI,3,BIULMS Sprint 5,To Do
+137,8,Story,"As an admin, every data change is written to the audit log","Acceptance criteria:
+- Model observer/trait on Book, BookCopy, Member, MemberPlan, BorrowTransaction, User
+- Stores table, action, user_id, record_id, old/new JSON, IP",Medium,FR-AUD-01 NFR-08 epic-AUD,5,BIULMS Sprint 6,To Do
+138,8,Story,"As an admin, I can browse and filter the audit log","Acceptance criteria:
+- DataTable filtered by table, user, action, date range
+- Diff view of old vs new values",Medium,FR-AUD-02 epic-AUD,3,BIULMS Sprint 6,To Do
+139,9,Story,"As a librarian, I see real KPI tiles on the dashboard","Replace theme placeholder content in resources/views/index.blade.php.
+
+Acceptance criteria:
+- Tiles: total titles, copies available, active loans, overdue loans, active members
+- Each tile links to the filtered list",Highest,FR-DASH-01 epic-DASH,5,BIULMS Sprint 4,To Do
+140,9,Story,"As a librarian, I see circulation charts on the dashboard","Acceptance criteria:
+- Loans per day for 30 days (line)
+- Top 5 borrowed titles (bar)
+- Works in light and dark mode",Medium,FR-DASH-02 epic-DASH,3,BIULMS Sprint 6,To Do
+141,9,Story,"As an admin, I can export circulation and inventory reports","Acceptance criteria:
+- Overdue report, circulation by date range, inventory by status
+- Export CSV and PDF",Medium,FR-DASH-03 epic-DASH,8,BIULMS Sprint 6,To Do
+142,10,Task,"Project setup: Laravel 12, SQLite, Docker/Sail, layered architecture","Repository/Service pattern, AppServiceProvider bindings, global helpers.",High,NFR-06 NFR-07 epic-QA,3,BIULMS Sprint 0,Done
+143,10,Task,Add dark mode theme toggle,Theme toggle persisted per user/browser.,Low,NFR-04 epic-QA,2,BIULMS Sprint 2,Done
+144,10,Task,"Feature test suite for auth, catalog and circulation","Acceptance criteria:
+- Factories for all models
+- Tests for role access, borrow (happy + ineligible), return, overdue job
+- composer test green; coverage >= 70% of services",Highest,NFR-06 epic-QA,8,BIULMS Sprint 3,To Do
+145,10,Task,"CI pipeline: Pint, tests on SQLite and MySQL",GitHub Actions workflow runs pint --test and php artisan test against SQLite and a MySQL 8 service container on every PR.,High,NFR-06 NFR-07 epic-QA,3,BIULMS Sprint 3,To Do
+146,10,Task,Index review for list and dashboard queries,"Add indexes on borrow_transactions(status, due_date), book_copies(status), members(status); verify NFR-01 with 50k seeded books.",Medium,NFR-01 epic-QA,2,BIULMS Sprint 4,To Do
+147,10,Task,Security review (OWASP Top 10) and hardening,"Check CSRF, mass assignment, upload validation (mime/size), authorization on every route, rate-limit login.",High,NFR-02 epic-QA,3,BIULMS Sprint 7,To Do
+148,10,Task,User acceptance testing with library staff,UAT scripts per epic; log defects; PO sign-off.,High,epic-QA,5,BIULMS Sprint 7,To Do
+149,10,Task,Production deployment and backups,"Provision MySQL, configure queue worker + scheduler, storage:link, nightly backups with 30-day retention.",High,NFR-05 epic-QA,3,BIULMS Sprint 7,To Do
