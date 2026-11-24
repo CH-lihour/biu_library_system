@@ -10,7 +10,7 @@
 
 | Artifact | Tool | Covers | Link |
 |---|---|---|---|
-| Entity Relationship Diagram | Lucidchart | All 15 tables, FKs, cardinality | [Open](https://lucid.app/lucidchart/d62c205d-e818-406f-b105-8ab35ae09055/edit) |
+| Entity Relationship Diagram | Lucidchart | All 15 tables, FKs, cardinality | [Open](https://lucid.app/lucidchart/7cd2af64-83fd-4333-a352-709c76fa8b45/edit) |
 | Borrow & Return sequence | Lucidchart | FR-CIRC-01..07, target design incl. eligibility + atomic return | [Open](https://lucid.app/lucidchart/4f334118-3310-4abc-ac94-bcfc6058a40a/edit) |
 | System architecture | Lucidchart | Layered pipeline, NFR-06 | [Open](https://lucid.app/lucidchart/67c88474-94a8-4ac5-ba91-de49b421283c/edit) |
 | Use case diagram | Lucidchart | All roles × epics | [Open](https://lucid.app/lucidchart/0263f2ea-1fed-4412-8014-884d83b44b67/edit) |

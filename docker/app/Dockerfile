@@ -23,6 +23,10 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
 RUN groupadd --force -g "$WWWGROUP" sail \
     && useradd -m -s /bin/bash -g "$WWWGROUP" -u "$WWWUSER" sail
 
+# The app-vendor volume inherits this ownership when it is first created.
+RUN mkdir -p /var/www/html/vendor \
+    && chown -R sail:"$WWWGROUP" /var/www/html/vendor
+
 WORKDIR /var/www/html
 USER sail
 

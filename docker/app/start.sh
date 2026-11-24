@@ -14,8 +14,11 @@ if [ ! -f .env ]; then
 fi
 
 echo "[start] Installing PHP dependencies"
-if [ ! -f vendor/autoload.php ]; then
+# vendor lives on its own volume, so reinstall whenever composer.lock has changed.
+lock_hash=$(md5sum composer.lock | cut -d' ' -f1)
+if [ ! -f vendor/autoload.php ] || [ "$(cat vendor/.lock-hash 2>/dev/null)" != "$lock_hash" ]; then
     composer install --no-interaction --prefer-dist
+    echo "$lock_hash" > vendor/.lock-hash
 fi
 
 if ! grep -qE '^APP_KEY=.+' .env; then
