@@ -25,6 +25,6 @@ class BookCopy extends Model
     }
 
     public function borrows(){
-        return $this->hasMany(BorrowTransaction::class, 'copy_id');
+        return $this->hasMany(BorrowTransaction::class, 'book_copy_id');
     }
 }

@@ -29,7 +29,7 @@ class BookRepository implements BookRepositoryInterface
         if (isset($data['author_ids'])) {
             $book->authors()->sync($data['author_ids']);
         }
-        
+
         $book->update($data);
 
         return $book;
@@ -38,8 +38,6 @@ class BookRepository implements BookRepositoryInterface
     public function delete(int $id)
     {
         $book = Book::findOrFail($id);
-
-        $book->delete();
 
         return $book->delete();
     }

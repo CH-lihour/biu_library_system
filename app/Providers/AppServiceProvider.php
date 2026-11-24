@@ -60,11 +60,6 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(
-            CategoryRepositoryInterface::class,
-            CategoryRepository::class
-        );
-
-        $this->app->bind(
             MemberRepositoryInterface::class,
             MemberRepository::class
         );
