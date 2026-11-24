@@ -467,21 +467,23 @@
             <div class="login-header">
                 <img src="{{ asset('assets/img/logos/biu_logo.png') }}" alt="BIU Library Logo" class="brand-logo">
                 <h2>Sign In</h2>
-                <p>Welcome back to BIU Library System</p>
+                <p>Welcome back to {{ config('app.name') }}</p>
             </div>
 
             <form action="{{ route('store') }}" method="POST" class="login-form" id="loginForm">
                 @csrf
 
-                <div class="form-group">
+                {{-- email --}}
+                <div class="form-group @error('email') error @enderror">
                     <div class="input-wrapper">
-                        <input type="email" id="email" name="email" placeholder=" " required autocomplete="email">
+                        <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder=" " required autocomplete="email">
                         <label for="email">Email Address</label>
                     </div>
-                    <span class="error-message" id="emailError"></span>
+                    <span class="error-message @error('email') show @enderror" id="emailError" role="alert">{{ $errors->first('email') }}</span>
                 </div>
 
-                <div class="form-group">
+                {{-- password --}}
+                <div class="form-group @error('password') error @enderror">
                     <div class="input-wrapper password-wrapper">
                         <input type="password" id="password" name="password" placeholder=" " required
                             autocomplete="current-password">
@@ -491,9 +493,10 @@
                             <span class="eye-icon"></span>
                         </button>
                     </div>
-                    <span class="error-message" id="passwordError"></span>
+                    <span class="error-message @error('password') show @enderror" id="passwordError" role="alert">{{ $errors->first('password') }}</span>
                 </div>
 
+                {{-- remember me --}}
                 <div class="form-options">
                     <label class="remember-wrapper">
                         <input type="checkbox" id="remember" name="remember">
@@ -502,7 +505,6 @@
                             Remember me
                         </span>
                     </label>
-                    <!-- <a href="#" class="forgot-password">Forgot password?</a> -->
                 </div>
 
                 <button type="submit" class="login-btn">
@@ -510,10 +512,6 @@
                     <span class="btn-loader"></span>
                 </button>
             </form>
-
-            <!-- <div class="signup-link">
-                <p>Don't have an account? <a href="#">Create one</a></p>
-            </div> -->
 
             <div class="success-message" id="successMessage">
                 <div class="success-icon">✓</div>
@@ -526,7 +524,7 @@
     {{--
     <script src="../../shared/js/form-utils.js"></script>
     <script src="script.js"></script> --}}
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const toggleBtn = document.getElementById("passwordToggle");
@@ -549,112 +547,3 @@
 </body>
 
 </html>
-<!-- <scrip
- 
-    // Basic Login Form Script
-    class BasicLoginForm {
-        constructor() {
-            this.form = document.getElementById('loginForm');
-            this.emailInput = document.getElementById('email');
-            this.passwordInput = document.getElementById('password');
-            this.passwordToggle = document.getElementById('passwordToggle');
-            this.successMessage = document.getElementById('successMessage');
-
-            this.init();
-        }
-
-        init() {
-            // Initialize shared utilities
-            FormUtils.addSharedAnimations();
-            FormUtils.setupFloatingLabels(this.form);
-            FormUtils.setupPasswordToggle(this.passwordInput, this.passwordToggle);
-
-            // Add event listeners
-            this.form.addEventListener('submit', this.handleSubmit.bind(this));
-            this.emailInput.addEventListener('input', () => this.validateField('email'));
-            this.passwordInput.addEventListener('input', () => this.validateField('password'));
-
-            // Add entrance animation
-            FormUtils.addEntranceAnimation(this.form.closest('.login-card'), 100);
-        }
-
-        validateField(fieldName) {
-            const input = document.getElementById(fieldName);
-            const value = input.value.trim();
-            let validation;
-
-            // Clear previous errors
-            FormUtils.clearError(fieldName);
-
-            // Validate based on field type
-            if (fieldName === 'email') {
-                validation = FormUtils.validateEmail(value);
-            } else if (fieldName === 'password') {
-                validation = FormUtils.validatePassword(value);
-            }
-
-            if (!validation.isValid && value !== '') {
-                FormUtils.showError(fieldName, validation.message);
-                return false;
-            } else if (validation.isValid) {
-                FormUtils.showSuccess(fieldName);
-                return true;
-            }
-
-            return true;
-        }
-
-        async handleSubmit(e) {
-            e.preventDefault();
-
-            const email = this.emailInput.value.trim();
-            const password = this.passwordInput.value.trim();
-
-            // Validate all fields
-            const emailValid = this.validateField('email');
-            const passwordValid = this.validateField('password');
-
-            if (!emailValid || !passwordValid) {
-                FormUtils.showNotification('Please fix the errors below', 'error', this.form);
-                return;
-            }
-
-            // Show loading state
-            const submitBtn = this.form.querySelector('.login-btn');
-            submitBtn.classList.add('loading');
-
-            try {
-                // Simulate login process
-                await FormUtils.simulateLogin(email, password);
-
-                // Show success state
-                this.showSuccess();
-
-            } catch (error) {
-                // Show error notification
-                FormUtils.showNotification(error.message, 'error', this.form);
-            } finally {
-                // Remove loading state
-                submitBtn.classList.remove('loading');
-            }
-        }
-
-        showSuccess() {
-            // Hide the form
-            this.form.style.display = 'none';
-
-            // Show success message
-            this.successMessage.classList.add('show');
-
-            // Simulate redirect after 2 seconds
-            setTimeout(() => {
-                FormUtils.showNotification('Redirecting to dashboard...', 'success', this.successMessage);
-            }, 2000);
-        }
-    }
-
-    // Initialize the form when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-        new BasicLoginForm();
-    });
-</scrip> -->
