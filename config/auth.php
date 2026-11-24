@@ -39,8 +39,9 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver'   => 'session',
             'provider' => 'users',
+            'remember' => 43200, // 30 days
         ],
     ],
 

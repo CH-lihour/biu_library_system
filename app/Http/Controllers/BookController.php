@@ -33,6 +33,7 @@ class BookController extends Controller
     public function store(StoreBookRequest $request)
     {
         $this->bookService->createBook($request->validated());
+
         return redirect()->route('books.index')
             ->with('success', 'Book created successfully.');
     }
@@ -40,7 +41,7 @@ class BookController extends Controller
     public function edit(int $id)
     {
         $book = $this->bookService->getBook($id);
-        
+
         $categories = Category::all();
         $publishers = Publisher::all();
         $authors    = Author::all();

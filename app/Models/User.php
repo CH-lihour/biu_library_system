@@ -32,7 +32,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'is_verified' => 'boolean',
-        'last_login' => 'datetime',
+        'last_login'  => 'datetime',
     ];
 
     public function staff(){

@@ -28,10 +28,10 @@ class AuthService
     public function redirectByRole(): string
     {
         return match(auth()->user()->role) {
-            'admin' => route('dashboard'),
-            'librarian' => route('dashboard'),
-            'member' => route('dashboard'),
-            default => route('dashboard'),
+            'admin'     => route('dashboard'),
+            'librarian' => route('books.index'),
+            'member'    => route('books.index'),
+            default     => route('dashboard'),
         };
     }
 }

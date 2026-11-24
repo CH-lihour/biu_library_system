@@ -11,22 +11,22 @@ use App\Http\Controllers\MemberPlanController;
 use App\Http\Controllers\PublisherController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => auth()->check() ? redirect()->route('dashboard') : redirect()->route('login') );
+Route::get('/', fn() => auth()->check() ? redirect()->route('dashboard') : redirect()->route('login'));
 
-Route::middleware('guest')->group(function(){
+Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'index'])->name('login');
     Route::post('/login', [LoginController::class, 'store'])->name('store');
 });
 
-Route::middleware('auth')->group(function(){
+Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
     // === Dashboard ===
-    Route::get('/dashboard', function(){
+    Route::get('/dashboard', function () {
         return view('index');
     })->name('dashboard');
 
-    Route::middleware('role:admin,librarian')->group(function(){
+    Route::middleware('role:admin,librarian')->group(function () {
         // === Books ===
         Route::resource('books', BookController::class);
 
@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function(){
         Route::resource('member-plans', MemberPlanController::class);
     });
 
-    Route::middleware('role:admin,librarian,member')->group(function(){
+    Route::middleware('role:admin,librarian,member')->group(function () {
 
         // === Borrow Transactions ===
         Route::get('/borrow-books', [BorrowTransactionController::class, 'index'])->name('borrows.index');

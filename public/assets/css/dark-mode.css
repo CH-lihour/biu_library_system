@@ -996,6 +996,10 @@ html[data-theme="dark"] {
   scrollbar-width: thin;
 }
 
+html[data-theme="dark"] .scroll-wrapper > .scroll-content {
+  scrollbar-color: auto;
+}
+
 html[data-theme="dark"] ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
