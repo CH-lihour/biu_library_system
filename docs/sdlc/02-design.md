@@ -272,4 +272,5 @@ can be copied out on its own. To change a screen, edit
 | D6 | Add `members.user_id` (nullable, unique FK) for member login | Members and staff share `users` auth; staff have `users.role_id`, members do not |
 | D7 | Permissions are ticked on the role form; each stores the route names it opens | One setup step: create the role and its permissions together |
 | D9 | Permissions are created from the admin route names after each migrate | No migration per permission, and none can be forgotten; new ones go to no role until ticked |
+| D10 | Reset tokens use Laravel's `password_reset_tokens` table instead of `users.reset_token` | Laravel handles hashing, expiry and one-time use; `users.reset_token` has no expiry and stays unused |
 | D8 | Self-registered members start as `pending` | The email is not verified, so staff check ID and can link an older card |

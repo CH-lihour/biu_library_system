@@ -16,6 +16,10 @@
                 <p>Welcome back to {{ config('app.name') }}</p>
             </div>
 
+            @if (session('success'))
+                <p role="status" style="color: #16a34a; text-align: center; margin-bottom: 16px;">{{ session('success') }}</p>
+            @endif
+
             <form action="{{ route('store') }}" method="POST" class="login-form" id="loginForm">
                 @csrf
 
@@ -51,6 +55,7 @@
                             Remember me
                         </span>
                     </label>
+                    <a href="{{ route('password.request') }}" class="forgot-password">Forgot password?</a>
                 </div>
 
                 <button type="submit" class="login-btn">
@@ -70,10 +75,6 @@
             </div>
         </div>
     </div>
-
-    {{--
-    <script src="../../shared/js/form-utils.js"></script>
-    <script src="script.js"></script> --}}
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

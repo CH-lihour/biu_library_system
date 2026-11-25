@@ -7,12 +7,14 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookCopyController;
 use App\Http\Controllers\BorrowTransactionController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\MemberApprovalController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberPlanController;
 use App\Http\Controllers\Portal\PortalController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Services\AuthService;
@@ -23,6 +25,11 @@ Route::get('/', fn (AuthService $auth) => auth()->check() ? redirect($auth->home
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'index'])->name('login');
     Route::post('/login', [LoginController::class, 'store'])->name('store');
+
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'store'])->middleware('throttle:6,1')->name('password.email');
+    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'index'])->name('password.reset');
+    Route::post('/reset-password', [ResetPasswordController::class, 'store'])->middleware('throttle:6,1')->name('password.update');
 
     // === Member self-registration ===
     Route::get('/register', [RegisterController::class, 'index'])->name('register');

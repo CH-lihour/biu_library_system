@@ -67,7 +67,7 @@ Priority uses MoSCoW: **M**ust, **S**hould, **C**ould, **W**on't (this release).
 | FR-AUTH-01 | Users sign in with email + password; failed attempts show a generic error. | M |
 | FR-AUTH-02 | Access to each admin action is decided by the permissions of the user's role. Members use a separate front-end. | M |
 | FR-AUTH-03 | After login, each role lands on its own home (staff dashboard vs. member portal). | M |
-| FR-AUTH-04 | Users can reset a forgotten password by emailed token (`users.reset_token`). | S |
+| FR-AUTH-04 | Users can reset a forgotten password by emailed token (Laravel's `password_reset_tokens` table, valid 60 minutes). | S |
 | FR-AUTH-05 | Admin can create, deactivate and change roles of staff user accounts. | S |
 | FR-AUTH-06 | `last_login` is recorded on each successful sign-in. | C |
 | FR-AUTH-07 | Admin can create, edit and delete roles, and sets the permissions on the role form in one step. | M |

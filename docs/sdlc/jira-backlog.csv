@@ -23,7 +23,7 @@ Acceptance criteria:
 - Unauthorized access returns 403",Highest,FR-AUTH-02 epic-AUTH,3,BIULMS Sprint 0,Done
 103,1,Story,"As a user, I can reset a forgotten password","Acceptance criteria:
 - Forgot-password form sends a signed, expiring token by email
-- Token stored hashed in users.reset_token and invalidated after use
+- Token stored hashed in password_reset_tokens and invalidated after use
 - New password must meet policy (min 8 chars)",High,FR-AUTH-04 epic-AUTH,5,BIULMS Sprint 5,To Do
 104,1,Story,"As an admin, I can manage staff user accounts","Acceptance criteria:
 - List, create, edit, soft-delete users with role admin/librarian
