@@ -61,8 +61,11 @@ Key conventions:
 ## Auth & Authorization
 
 - Custom session auth via `App\Http\Controllers\Auth\LoginController` (no Breeze/Jetstream).
-- Authorization is role-based through the `role` middleware (`RoleMiddleware`, aliased in [bootstrap/app.php](bootstrap/app.php)). Usage: `Route::middleware('role:admin,librarian')`. Roles are stored on `users.role` (string); known roles are `admin`, `librarian`, `member`.
-- CRUD resources (books, members, etc.) require `role:admin,librarian`; borrow/return is open to `role:admin,librarian,member`.
+- **Two front-ends, one login.** Staff have `users.role_id` and use the admin panel; members own a `members` row (`members.user_id`) and use the member front-end under `/my` (`portal.*` routes, `layouts/portal`). `User::isStaff()` / `isMember()` decide; members register themselves at `/register` and stay `pending` until staff approve them.
+- **Roles are data**, created in the admin panel, and their permissions are ticked on the role form itself (there is no separate permission screen). A `Permission` lists the route names it opens (`permissions.routes`); a role with `is_super` opens everything. The `admin.access` middleware (`AdminAccessMiddleware`) checks the current route name. **Permissions are created automatically**: `PermissionSyncService` runs after every `php artisan migrate` (also `php artisan permissions:sync`) and turns each uncovered *named* admin route into a permission (`reports.index` becomes "View reports"), given to no role until someone ticks it. It also removes permissions whose routes are gone, so renaming a route drops the old tick.
+- Use `can_access('books.create')` in Blade/DataTables to hide what the user cannot open, and pass the route name as the second argument of `edit_button()` / `delete_button()`.
+- `AccessService` stops people from giving out or taking over more access than they have. Broken library rules throw `RuleViolation`, which redirects back with the message.
+- In the portal, always read records through `auth()->user()->member`, never from an ID in the request.
 - `bootstrap/app.php` also registers a custom 404 handler returning JSON or `errors.404`.
 
 ## Global Helpers
@@ -71,7 +74,7 @@ Key conventions:
 
 ## Models & Domain
 
-Core entities: `Book` (belongsTo Publisher/Category, belongsToMany Author via `book_authors`), `BookCopy` (physical copy with a `barcode` and status enum), `BorrowTransaction` (links BookCopy ↔ Member ↔ Staff with borrow/due/return dates), plus `Author`, `Publisher`, `Category`, `Member`, `MemberPlan`, `Staff`, `Reservation`, `Review`, `Notification`, `AuditLog`. `User` uses `SoftDeletes` and has the `role` column. `BookCopy` status values are defined in `App\Enums\BookCopyStatus` (`available`, `borrowed`, `damaged`, `lost`).
+Core entities: `Book` (belongsTo Publisher/Category, belongsToMany Author via `book_authors`), `BookCopy` (physical copy with a `barcode` and status enum), `BorrowTransaction` (links BookCopy ↔ Member ↔ Staff with borrow/due/return dates), plus `Author`, `Publisher`, `Category`, `Member`, `MemberPlan`, `Staff`, `Reservation`, `Review`, `Notification`, `AuditLog`. `User` uses `SoftDeletes` and belongs to a `Role`. `BookCopy` status values are defined in `App\Enums\BookCopyStatus` (`available`, `borrowed`, `damaged`, `lost`).
 
 ## Notes
 

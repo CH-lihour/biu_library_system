@@ -24,16 +24,28 @@
         <div class="sidebar-content">
 
             @php
-                $isBookModule = request()->routeIs('books.*')
-                                || request()->routeIs('authors.*')
-                                || request()->routeIs('publishers.*')
-                                || request()->routeIs('categories.*')
-                                || request()->routeIs('book-copies.*');
-
-                $isMemberModule = request()->routeIs('members.*')
-                                || request()->routeIs('member-plans.*');
-
-                $isBookTransactionModule = request()->routeIs('borrows.*');
+                // [title, icon, id, [[label, route], ...]] - a link shows only when the role opens it
+                $menu = [
+                    ['Book', 'icon-book-open', 'base', [
+                        ['All Books', 'books.index'],
+                        ['Book Copies', 'book-copies.index'],
+                        ['Authors', 'authors.index'],
+                        ['Publishers', 'publishers.index'],
+                        ['Categories', 'categories.index'],
+                    ]],
+                    ['Members', 'fas fa-th-list', 'members', [
+                        ['Members', 'members.index'],
+                        ['Member Plans', 'member-plans.index'],
+                    ]],
+                    ['Book Transactions', 'fas fa-arrow-circle-right', 'bookTransactions', [
+                        ['Borrow Books', 'borrows.index'],
+                        ['Reservations', 'reservations.index'],
+                    ]],
+                    ['Administration', 'fas fa-user-shield', 'administration', [
+                        ['Staff Accounts', 'users.index'],
+                        ['Roles & Permissions', 'roles.index'],
+                    ]],
+                ];
             @endphp
 
             <ul class="nav nav-secondary" id="sidebarMenuAccordion">
@@ -49,84 +61,32 @@
                     </span>
                     <h4 class="text-section">Menu</h4>
                 </li>
-                @auth
-                    @if (auth()->user()->role === 'admin' || auth()->user()->role === 'librarian')
-                        <li class="nav-item {{ $isBookModule ? 'active submenu' : '' }}">
-                            <a data-bs-toggle="collapse" href="#base" class="{{ $isBookModule ? '' : 'collapsed' }}" aria-expanded="{{ $isBookModule ? 'true' : 'false' }}">
-                                <i class="icon-book-open"></i>
-                                <p>Book</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse {{ $isBookModule ? 'show' : '' }}" id="base" data-bs-parent="#sidebarMenuAccordion">
-                                <ul class="nav nav-collapse">
-                                    <li class="{{ request()->routeIs('books.*') ? 'active' : '' }}">
-                                        <a href="{{ route('books.index') }}">
-                                            <span class="sub-item">All Books</span>
+                @foreach ($menu as [$title, $icon, $id, $links])
+                    @php
+                        $links = array_filter($links, fn ($link) => can_access($link[1]));
+                        $patterns = array_map(fn ($link) => \Illuminate\Support\Str::before($link[1], '.') . '.*', $links);
+                        $isActive = $links && request()->routeIs(...$patterns);
+                    @endphp
+                    @continue(! $links)
+                    <li class="nav-item {{ $isActive ? 'active submenu' : '' }}">
+                        <a data-bs-toggle="collapse" href="#{{ $id }}" class="{{ $isActive ? '' : 'collapsed' }}" aria-expanded="{{ $isActive ? 'true' : 'false' }}">
+                            <i class="{{ $icon }}"></i>
+                            <p>{{ $title }}</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse {{ $isActive ? 'show' : '' }}" id="{{ $id }}" data-bs-parent="#sidebarMenuAccordion">
+                            <ul class="nav nav-collapse">
+                                @foreach ($links as [$label, $route])
+                                    <li class="{{ request()->routeIs(\Illuminate\Support\Str::before($route, '.') . '.*') ? 'active' : '' }}">
+                                        <a href="{{ route($route) }}">
+                                            <span class="sub-item">{{ $label }}</span>
                                         </a>
                                     </li>
-                                    <li class="{{ request()->routeIs('book-copies.*') ? 'active' : '' }}">
-                                        <a href="{{ route("book-copies.index") }}">
-                                            <span class="sub-item">Book Copies</span>
-                                        </a>
-                                    </li>
-                                    <li class="{{ request()->routeIs('authors.*') ? 'active' : '' }}">
-                                        <a href="{{ route("authors.index") }}">
-                                            <span class="sub-item">Authors</span>
-                                        </a>
-                                    </li>
-                                    <li class="{{ request()->routeIs('publishers.*') ? 'active' : '' }}">
-                                        <a href="{{ route("publishers.index") }}">
-                                            <span class="sub-item">Publishers</span>
-                                        </a>
-                                    </li>
-                                    <li class="{{ request()->routeIs('categories.*') ? 'active' : '' }}">
-                                        <a href="{{ route("categories.index") }}">
-                                            <span class="sub-item">Categories</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item {{ $isMemberModule ? 'active submenu' : '' }}">
-                            <a data-bs-toggle="collapse" href="#members" class="{{ $isMemberModule ? '' : 'collapsed' }}" aria-expanded="{{ $isMemberModule ? 'true' : 'false' }}">
-                                <i class="fas fa-th-list"></i>
-                                <p>Members</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse {{ $isMemberModule ? 'show' : '' }}" id="members" data-bs-parent="#sidebarMenuAccordion">
-                                <ul class="nav nav-collapse">
-                                    <li class="{{ request()->routeIs('members.*') ? 'active' : '' }}">
-                                        <a href="{{ route('members.index') }}">
-                                            <span class="sub-item">Members</span>
-                                        </a>
-                                    </li>
-                                    <li class="{{ request()->routeIs('member-plans.*') ? 'active' : '' }}">
-                                        <a href="{{ route('member-plans.index') }}">
-                                            <span class="sub-item">Member Plans</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-
-                    @endif
-                        <li class="nav-item">
-                            <a data-bs-toggle="collapse" href="#bookTransactions" class="{{ $isBookTransactionModule ? '' : 'collapsed' }}" aria-expanded="{{ $isBookTransactionModule ? 'true' : 'false' }}">
-                                <i class="fas fa-arrow-circle-right"></i>
-                                <p>Book Transactions</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse {{ $isBookTransactionModule ? 'show' : '' }}" id="bookTransactions" data-bs-parent="#sidebarMenuAccordion">
-                                <ul class="nav nav-collapse">
-                                    <li class="{{ request()->routeIs('borrows.*') ? 'active' : '' }}">
-                                        <a href="{{ route('borrows.index') }}">
-                                            <span class="sub-item">Borrow Books</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                @endauth
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li>
+                @endforeach
             </ul>
         </div>
     </div>

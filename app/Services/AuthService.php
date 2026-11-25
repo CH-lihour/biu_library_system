@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Repositories\Interfaces\AuthRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,6 +16,13 @@ class AuthService
             return false;
         }
 
+        // Neither a working staff account nor a member: nothing to sign in to.
+        if (! auth()->user()->isStaff() && ! auth()->user()->isMember()) {
+            Auth::logout();
+
+            return false;
+        }
+
         $this->authRepository->updateLastLogin(auth()->id());
 
         return true;
@@ -25,13 +33,22 @@ class AuthService
         Auth::logout();
     }
 
-    public function redirectByRole(): string
+    public function home(User $user): string
     {
-        return match(auth()->user()->role) {
-            'admin'     => route('dashboard'),
-            'librarian' => route('books.index'),
-            'member'    => route('books.index'),
-            default     => route('dashboard'),
-        };
+        return $user->isStaff() ? route('dashboard') : route('portal.home');
+    }
+
+    /** The page asked for before signing in, unless it belongs to the other front-end. */
+    public function redirectAfterLogin(): string
+    {
+        $user = auth()->user();
+        $intended = session()->pull('url.intended');
+        $isPortal = $intended && str_starts_with(trim((string) parse_url($intended, PHP_URL_PATH), '/').'/', 'my/');
+
+        if (! $intended || (! $user->isStaff() && ! $isPortal)) {
+            return $this->home($user);
+        }
+
+        return $intended;
     }
 }

@@ -29,8 +29,8 @@ class BookDataTable extends DataTable
             ->editColumn('cover_image_url', fn($book) => book_preview($book->cover_image_url, $book->title))
             ->editColumn("created_at", fn($query) => format_date($query->created_at))
             ->addColumn('action', function($query) {
-                return edit_button(route('books.edit', $query->id)) . ' ' .
-                    delete_button(route('books.destroy', $query->id));
+                return edit_button(route('books.edit', $query->id), 'books.edit') . ' ' .
+                    delete_button(route('books.destroy', $query->id), 'books.destroy');
             })
             ->rawColumns(['cover_image_url', 'action', 'authors']);
     }

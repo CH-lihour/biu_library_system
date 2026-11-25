@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('page-title', 'Memebers')
+@section('page-title', 'Members')
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -8,10 +8,12 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
                         <h4 class="card-title mb-0">All Members</h4>
+                        @if (can_access('members.create'))
                         <a href="{{ route('members.create') }}" class="btn btn-primary btn-round">
                             <i class="fa fa-plus"></i>
                             Add Member
                         </a>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body">

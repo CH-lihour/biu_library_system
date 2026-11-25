@@ -36,7 +36,7 @@ class BorrowTransactionDataTable extends DataTable
                 return format_date($row->created_at);
             })
             ->addColumn('action', function($row){
-                return view('borrows.actions', compact('row'));
+                return $row->return_date === null && can_access('borrows.return') ? view('borrows.actions', compact('row')) : '';
             })
             ->addIndexColumn()
             ->rawColumns(['action', 'book_cover_image', 'borrow_date', 'due_date', 'return_date']);
@@ -53,7 +53,8 @@ class BorrowTransactionDataTable extends DataTable
             ->join('members', 'borrow_transactions.member_id', '=', 'members.id')
             ->join('book_copies', 'borrow_transactions.book_copy_id', '=', 'book_copies.id')
             ->join('books', 'book_copies.book_id', '=', 'books.id')
-            ->join('users', 'borrow_transactions.staff_id', '=', 'users.id')
+            ->leftJoin('staff', 'borrow_transactions.staff_id', '=', 'staff.id')
+            ->leftJoin('users', 'staff.user_id', '=', 'users.id')
             ->select(
                 'borrow_transactions.*',
                 'members.name as member_name',

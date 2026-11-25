@@ -46,4 +46,14 @@ class Book extends Model
     public function copies(){
         return $this->hasMany(BookCopy::class);
     }
+
+    public function reservations(){
+        return $this->hasMany(Reservation::class);
+    }
+
+    /** Copies a member could get now. Needs the available_copies and held_copies counts. */
+    public function freeCopies(): int
+    {
+        return max(0, $this->available_copies - $this->held_copies);
+    }
 }

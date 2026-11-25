@@ -28,8 +28,8 @@ class BookCopyDataTable extends DataTable
                 return status_label($query->status);
             })
             ->addColumn('action', function($query) {
-                return edit_button(route('book-copies.edit', $query->id)) . ' ' .
-                    delete_button(route('book-copies.destroy', $query->id));
+                return edit_button(route('book-copies.edit', $query->id), 'book-copies.edit') . ' ' .
+                    delete_button(route('book-copies.destroy', $query->id), 'book-copies.destroy');
             })
             ->rawColumns(['action', 'status']);
     }

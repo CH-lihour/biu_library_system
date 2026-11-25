@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\BookCopy;
 use App\Models\BorrowTransaction;
 use App\Models\Member;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +25,7 @@ class SchemaConsistencyTest extends TestCase
             'name' => 'Remember Me',
             'email' => 'remember@example.com',
             'password' => Hash::make('password'),
-            'role' => 'librarian',
+            'role_id' => Role::where('name', 'Librarian')->value('id'),
         ]);
 
         $this->post(route('store'), [

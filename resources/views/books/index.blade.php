@@ -29,10 +29,12 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
                         <h4 class="card-title mb-0">All Books</h4>
+                        @if (can_access('books.create'))
                         <a href="{{ route('books.create') }}" class="btn btn-primary btn-round">
                             <i class="fa fa-plus"></i>
                             Add Book
                         </a>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body">

@@ -18,7 +18,7 @@
 | Loan / copy state machines | Lucidchart | Status enums | [Open](https://lucid.app/lucidchart/3fcb3e8c-c863-4386-a02a-6b4d7919c9ab/edit) |
 | Sitemap / navigation | Lucidchart | Screen inventory | [Open](https://lucid.app/lucidchart/671869a9-480d-4303-a1ae-9af806c6922c/edit) |
 | Design tokens & component library | Figma | Color/space variables, 18 icons, Button, Status Badge, Form Input, Nav Item, KPI Tile | [Open](https://www.figma.com/design/VyTOFigM9ZabRdMk3uoJFQ) |
-| UI screens (32) + style guide | SVG for Figma import | Every screen in the sitemap, plus modals, dark mode and 404 | [figma-svg/](figma-svg/) |
+| UI screens (40) + style guide | SVG for Figma import | Every screen in the sitemap, plus modals, dark mode and 404 | [figma-svg/](figma-svg/) |
 | UI wireframes (interactive) | HTML | Same 5 screens, light/dark toggle | [wireframes.html](wireframes.html) |
 
 The Mermaid sources below are the canonical text versions (rendered by GitHub and VS Code); the Lucidchart
@@ -170,11 +170,16 @@ flowchart TD
     CIRC --> RS["/reservations - new"]
     D --> REP["/reports - new"]
     D --> ADM["Administration"]
-    ADM --> US["/users - new"]
+    ADM --> US["/users - staff accounts"]
+    ADM --> RO["/roles - with permissions"]
     ADM --> AL["/audit-logs - new"]
-    L --> MP2["/my - member portal, new"]
+    L --> RG["/register - member self-registration"]
+    RG --> MP2
+    L --> MP2["/my - member portal"]
+    MP2 --> MC["Catalog and book"]
     MP2 --> ML["My loans"]
     MP2 --> MR["My reservations"]
+    MP2 --> MPR["Profile"]
     MP2 --> MN["Notifications"]
 ```
 
@@ -199,7 +204,7 @@ theme is documented as reference values because variable modes need a paid Figma
 
 ### Screen mockups for Figma (SVG)
 
-All 32 screens and a style guide are in [figma-svg/](figma-svg/) as plain 1440 × 900 SVGs (the style guide is
+All 40 screens and a style guide are in [figma-svg/](figma-svg/) as plain 1440 × 900 SVGs (the style guide is
 1440 × 1000). They use the same tokens, with named layers (`Sidebar`, `Top Navbar`, `KPI/…`, `Button/…`, `Badge/…`,
 `Field/…`, `Row 1…`) and real text, so they import as editable layers.
 
@@ -208,6 +213,7 @@ All 32 screens and a style guide are in [figma-svg/](figma-svg/) as plain 1440 �
 | [00-style-guide.svg](figma-svg/00-style-guide.svg) | Colors (light + dark), type ramp, icons, buttons, badges, inputs, tabs, checkbox, radio, rating, chips, KPI tiles | NFR-04 |
 | **Auth** | | |
 | [01-login.svg](figma-svg/01-login.svg) | Login with error state | FR-AUTH-01 |
+| [33-register.svg](figma-svg/33-register.svg) | Member self-registration | FR-AUTH-09 |
 | [06-forgot-password.svg](figma-svg/06-forgot-password.svg) | Reset-password request, sent confirmation | FR-AUTH-04 |
 | **Dashboard** | | |
 | [02-dashboard.svg](figma-svg/02-dashboard.svg) | Staff dashboard: KPIs, loans chart, top titles, overdue table | FR-DASH-01, 02 |
@@ -224,6 +230,7 @@ All 32 screens and a style guide are in [figma-svg/](figma-svg/) as plain 1440 �
 | **Membership** | | |
 | [17-members.svg](figma-svg/17-members.svg) | Members DataTable with plan and status filters | FR-MEM-01 |
 | [18-member-form.svg](figma-svg/18-member-form.svg) | Add member, plan summary, portal login option | FR-MEM-01, 05 |
+| [38-review-registration.svg](figma-svg/38-review-registration.svg) | Approve, link or reject a registration | FR-AUTH-09 |
 | [19-member-profile.svg](figma-svg/19-member-profile.svg) | Profile: active loans, history, outstanding fines | FR-MEM-04, FR-CIRC-07 |
 | [20-member-plans.svg](figma-svg/20-member-plans.svg) · [21-member-plan-form.svg](figma-svg/21-member-plan-form.svg) | Plan cards and edit form | FR-MEM-02 |
 | **Circulation** | | |
@@ -233,11 +240,16 @@ All 32 screens and a style guide are in [figma-svg/](figma-svg/) as plain 1440 �
 | [24-reservations.svg](figma-svg/24-reservations.svg) | Reservations with queue, hold expiry, fulfil/cancel | FR-RES-01..03 |
 | **Administration** | | |
 | [25-reports.svg](figma-svg/25-reports.svg) | Reports: circulation chart, inventory by status, category table, CSV/PDF export | FR-DASH-03 |
-| [26-users.svg](figma-svg/26-users.svg) · [27-user-form.svg](figma-svg/27-user-form.svg) | Staff accounts, roles, deactivate, permission matrix | FR-AUTH-02, 05, 06 |
+| [26-users.svg](figma-svg/26-users.svg) · [27-user-form.svg](figma-svg/27-user-form.svg) | Staff accounts with role and status | FR-AUTH-02, 05, 06 |
+| [34-roles.svg](figma-svg/34-roles.svg) · [35-role-form.svg](figma-svg/35-role-form.svg) | Roles list, role form with collapsible permission groups and select all | FR-AUTH-07, 08 |
 | [28-audit-log.svg](figma-svg/28-audit-log.svg) | Audit log with filters, field diff and raw JSON | FR-AUD-01, 02 |
 | **Member portal** | | |
 | [05-member-portal.svg](figma-svg/05-member-portal.svg) | Member home: loans, fines, notifications | FR-DASH-04, FR-NOTI-03 |
 | [29-member-catalog.svg](figma-svg/29-member-catalog.svg) | Catalog search with category chips and reserve buttons | FR-RES-01 |
+| [39-member-book.svg](figma-svg/39-member-book.svg) | Book details with Reserve | FR-RES-01 |
+| [40-member-loans.svg](figma-svg/40-member-loans.svg) | My loans and history | FR-DASH-04 |
+| [41-member-reservations.svg](figma-svg/41-member-reservations.svg) | My reservations | FR-RES-01, 03 |
+| [42-member-profile.svg](figma-svg/42-member-profile.svg) | Profile and password | FR-MEM-05 |
 | [30-review-modal.svg](figma-svg/30-review-modal.svg) | Write-a-review dialog with star rating | FR-REV-01 |
 | **System** | | |
 | [32-not-found.svg](figma-svg/32-not-found.svg) | 404 page | — |
@@ -257,4 +269,7 @@ can be copied out on its own. To change a screen, edit
 | D3 | Scheduled commands for overdue / expiry / reminders | Avoid computing status on every read; dashboard queries stay cheap |
 | D4 | Store `fine_amount` on the transaction at return | Historical accuracy if plan fines change later |
 | D5 | Audit via model observer trait | One place; no controller changes |
-| D6 | Add `members.user_id` (nullable FK) for member login | Members and staff share `users` auth with `role` |
+| D6 | Add `members.user_id` (nullable, unique FK) for member login | Members and staff share `users` auth; staff have `users.role_id`, members do not |
+| D7 | Permissions are ticked on the role form; each stores the route names it opens | One setup step: create the role and its permissions together |
+| D9 | Permissions are created from the admin route names after each migrate | No migration per permission, and none can be forgotten; new ones go to no role until ticked |
+| D8 | Self-registered members start as `pending` | The email is not verified, so staff check ID and can link an older card |

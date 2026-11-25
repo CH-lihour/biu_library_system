@@ -39,13 +39,13 @@
                             <div class="col-md-3 form-group">
                                 <label for="join_date">Join Date <span class="text-danger">*</span></label>
                                 <input type="date" name="join_date" class="form-control" id="join_date"
-                                    value="{{ old('join_date', $member->join_date->format('Y-m-d')) }}" />
+                                    value="{{ old('join_date', $member->join_date?->format('Y-m-d')) }}" />
                                 <span class="text-danger">{{ $errors->first('join_date') }}</span>
                             </div>
                             <div class="col-md-3 form-group">
                                 <label for="expiry_date">Expiry Date <span class="text-danger">*</span></label>
                                 <input type="date" name="expiry_date" class="form-control" id="expiry_date"
-                                    value="{{ old('expiry_date', $member->expiry_date->format('Y-m-d')) }}" />
+                                    value="{{ old('expiry_date', $member->expiry_date?->format('Y-m-d')) }}" />
                                 <span class="text-danger">{{ $errors->first('expiry_date') }}</span>
                             </div>
                         </div>

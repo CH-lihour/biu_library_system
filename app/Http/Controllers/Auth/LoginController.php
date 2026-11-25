@@ -29,7 +29,7 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended($this->authService->redirectByRole());
+        return redirect($this->authService->redirectAfterLogin());
     }
 
     public function destroy(Request $request){

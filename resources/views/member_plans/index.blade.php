@@ -8,10 +8,12 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
                         <h4 class="card-title mb-0">All Member Plans</h4>
+                        @if (can_access('member-plans.create'))
                         <a href="{{ route('member-plans.create') }}" class="btn btn-primary btn-round">
                             <i class="fa fa-plus"></i>
                             Add Member Plan
                         </a>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body">

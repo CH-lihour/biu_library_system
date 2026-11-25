@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\Models\Member;
+
 interface MemberRepositoryInterface
 {
     public function createMember(array $data);
@@ -14,4 +16,7 @@ interface MemberRepositoryInterface
 
     public function getMaxId();
 
+    public function unlinkedCardsByEmail(string $email);
+
+    public function moveLogin(Member $from, Member $to): void;
 }

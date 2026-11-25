@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('page-title')
+@section('page-title', 'Dashboard')
 @section('page-subtitle', 'Dashboard Overview For BIU Library')
 
 @section('content')

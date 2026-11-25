@@ -42,4 +42,15 @@ class BorrowTransaction extends Model
     public function staff(){
         return $this->belongsTo(Staff::class);
     }
+
+    /** Still out, whatever the stored status says. */
+    public function scopeOnLoan($query)
+    {
+        return $query->whereNull('return_date')->whereNot('status', 'lost');
+    }
+
+    public function isOverdue(): bool
+    {
+        return $this->return_date === null && $this->due_date->lt(today());
+    }
 }

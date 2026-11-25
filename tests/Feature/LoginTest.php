@@ -54,7 +54,7 @@ class LoginTest extends TestCase
 
     public function test_valid_user_can_login(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->staff()->create();
 
         $this->post(route('store'), [
             'email' => $user->email,

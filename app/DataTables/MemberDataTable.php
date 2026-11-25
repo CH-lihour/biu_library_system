@@ -21,10 +21,14 @@ class MemberDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->editColumn('plan_name', function($query){
-                return $query->plan_name . ' (' . ($query->loan_duration_days ?? '-') . ' days)';
+                return $query->plan_name ? $query->plan_name . ' (' . $query->loan_duration_days . ' days)' : '-';
             })
             ->editColumn('status', function($query){
-                return status_label($query->status);
+                $label = status_label($query->status);
+
+                return $query->isPending() && can_access('members.approval')
+                    ? '<a href="' . route('members.approval', $query->id) . '" title="Review registration">' . $label . ' Review</a>'
+                    : $label;
             })
             ->editColumn('address', function($query){
                 return $query->address ?? '-';
@@ -39,8 +43,12 @@ class MemberDataTable extends DataTable
                 return $query->created_at ? format_date($query->created_at) : '';
             })
             ->addColumn('action', function($query){
-                return edit_button(route('members.edit', $query->id)) . ' ' .
-                    delete_button(route('members.destroy', $query->id));
+                $review = $query->isPending() && can_access('members.approval')
+                    ? '<a href="' . route('members.approval', $query->id) . '" class="btn btn-sm btn-success" title="Review registration"><i class="fa fa-user-check"></i></a> '
+                    : '';
+
+                return $review . edit_button(route('members.edit', $query->id), 'members.edit') . ' ' .
+                    delete_button(route('members.destroy', $query->id), 'members.destroy');
             })
             ->rawColumns(['action', 'status']);
     }
@@ -53,7 +61,7 @@ class MemberDataTable extends DataTable
     public function query(Member $model): QueryBuilder
     {
         $query = $model->newQuery()
-            ->join('member_plans', 'members.plan_id', '=', 'member_plans.id')
+            ->leftJoin('member_plans', 'members.plan_id', '=', 'member_plans.id')
             ->select(
                 'members.*',
                 'member_plans.name as plan_name',
@@ -91,16 +99,16 @@ class MemberDataTable extends DataTable
                 ->width(40)
                 ->addClass('text-center'),
             Column::make('member_code')->title('Member Code'),
-            Column::make('name')->title('Name'),
-            Column::make('plan_name')->title('Plan Name'),
+            Column::make('name')->name('members.name')->title('Name'),
+            Column::make('plan_name')->name('member_plans.name')->title('Plan Name'),
             Column::make('status')->title('Status'),
             Column::make('join_date')->title('Join Date'),
             Column::make('expiry_date')->title('Expiry Date'),
             Column::make('email')->title('Email'),
             Column::make('phone')->title('Phone'),
             Column::make('address')->title('Address'),
-            Column::make('created_at')->title('Created At'),
-            Column::make('action')
+            Column::make('created_at')->name('members.created_at')->title('Created At'),
+            Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)

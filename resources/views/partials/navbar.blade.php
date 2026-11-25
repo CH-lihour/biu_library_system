@@ -26,7 +26,7 @@
                 </ul>
             </li>
             @auth
-                @if (auth()->user()->role === 'admin')
+                @if (auth()->user()->isSuperAdmin())
                     <li class="nav-item topbar-icon dropdown hidden-caret">
                         <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

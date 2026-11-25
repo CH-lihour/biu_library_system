@@ -8,10 +8,12 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
                         <h4 class="card-title mb-0">All Borrow Transactions</h4>
+                        @if (can_access('borrows.create'))
                         <a href="{{ route('borrows.create') }}" class="btn btn-primary btn-round">
                             <i class="fa fa-plus"></i>
                             Borrow Book
                         </a>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body">

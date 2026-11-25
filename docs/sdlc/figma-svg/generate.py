@@ -175,7 +175,7 @@ def small_btn(x, y, label, variant="primary"):
 
 TONE = {"available": "success", "returned": "success", "active": "success", "fulfilled": "success",
         "created": "success", "borrowed": "warning", "pending": "warning", "damaged": "warning",
-        "suspend": "warning", "overdue": "danger", "lost": "danger", "expired": "danger",
+        "suspend": "warning", "terminated": "danger", "overdue": "danger", "lost": "danger", "expired": "danger",
         "deleted": "danger", "updated": "info", "librarian": "info", "admin": "secondary",
         "member": "neutral", "inactive": "neutral", "cancelled": "neutral", "used": "info"}
 
@@ -431,7 +431,8 @@ NAV = [("MAIN", [("Dashboard", "dashboard")]),
                     ("Publishers", "publisher"), ("Categories", "tag")]),
        ("MEMBERSHIP", [("Members", "members"), ("Member Plans", "plan")]),
        ("CIRCULATION", [("Borrow Books", "borrow"), ("Reservations", "bookmark")]),
-       ("ADMIN", [("Reports", "chart"), ("Users", "usercheck"), ("Audit Log", "shield")])]
+       ("ADMIN", [("Reports", "chart"), ("Staff Accounts", "usercheck"),
+                  ("Roles & Permissions", "members"), ("Audit Log", "shield")])]
 
 
 def logo(x, y, dark=True):
@@ -450,12 +451,12 @@ def sidebar(active):
             on = label == active
             item = []
             if on:
-                item.append(rect(12, y, SIDE - 24, 40, C["primary"], rx=4))
+                item.append(rect(12, y, SIDE - 24, 36, C["primary"], rx=4))
             col = C["white"] if on else C["ondark"]
-            item.append(icon(ic, 28, y + 11, 18, col))
-            item.append(text(58, mid(y, 40, 14), label, 14, 600 if on else 500, col))
+            item.append(icon(ic, 28, y + 9, 18, col))
+            item.append(text(58, mid(y, 36, 14), label, 14, 600 if on else 500, col))
             parts.append(g(f"Nav/{label}{' (active)' if on else ''}", *item))
-            y += 40
+            y += 36
     parts.append(g("Logout", icon("logout", 28, H - 44, 18, C["ondark"]),
                    text(58, mid(H - 53, 36, 14), "Sign out", 14, 500, C["ondark"])))
     return g("Sidebar", *parts)
@@ -576,8 +577,28 @@ def screen_login():
                 checkbox(x + 32, y + 334, "Remember me"),
                 text(x + cw - 32, y + 350, "Forgot password?", 13, 600, C["primary"], anchor="end"),
                 button(x + 32, y + 368, "Sign in", w=cw - 64, h=42)[0],
-                text(W / 2, y + 438, "BIU Library Management System · v1.0", 12, 400, C["muted"], anchor="middle")]
-    return svg("01-Login", "".join(auth_card(cw, 460, kids)), bg=C["sidebar"])
+                text(W / 2, y + 440, "New member?  Create an account", 13, 600, C["primary"], anchor="middle"),
+                text(W / 2, y + 468, "BIU Library Management System · v1.0", 12, 400, C["muted"], anchor="middle")]
+    return svg("01-Login", "".join(auth_card(cw, 490, kids)), bg=C["sidebar"])
+
+
+def screen_register():
+    cw = 460
+
+    def kids(x, y):
+        w = cw - 64
+        return [text(x + 32, y + 112, "Create account", 22, 700),
+                text(x + 32, y + 134, "Join the BIU Library as a member", 13, 400, C["muted"]),
+                field(x + 32, y + 156, w, "Full name", "Sok Dara"),
+                field(x + 32, y + 224, w, "Email", "sok.dara@student.biu.edu", "focus"),
+                field(x + 32, y + 292, w, "Phone (optional)", "012 345 678"),
+                field(x + 32, y + 360, w, "Address (optional)", "Phnom Penh"),
+                field(x + 32, y + 428, w, "Password", "••••••••••"),
+                field(x + 32, y + 496, w, "Confirm password", "••••••••••"),
+                text(x + 32, y + 572, "At least 8 characters.", 12, 400, C["muted"]),
+                button(x + 32, y + 590, "Create account", w=w, h=42)[0],
+                text(W / 2, y + 662, "Already have an account?  Sign in", 13, 600, C["primary"], anchor="middle")]
+    return svg("33-Register", "".join(auth_card(cw, 690, kids)), bg=C["sidebar"])
 
 
 def screen_forgot():
@@ -895,8 +916,10 @@ def screen_members():
             ("Dr. Meas Sokha", "M-0262", "sokha.meas@biu.edu", "Staff", "05 Jan 2026", "04 Jan 2029", "4", "active"),
             ("Lim Sopheak", "M-0310", "sopheak.lim@student.biu.edu", "Student", "20 Mar 2026", "19 Mar 2028", "1", "active"),
             ("Ouk Bopha", "M-0377", "bopha.ouk@yahoo.com", "Public", "11 Jun 2026", "10 Jun 2027", "0", "inactive"),
-            ("Pich Sreymom", "M-0412", "sreymom.pich@student.biu.edu", "Student", "23 Nov 2026", "23 Nov 2027", "0", "active")]
-    rows = [[("person", n, c), e, p, j, x, l, ("b", s), acts] for n, c, e, p, j, x, l, s in data]
+            ("Pich Sreymom", "M-0412", "sreymom.pich@student.biu.edu", "—", "23 Nov 2026", "—", "0", "pending")]
+    review = ("btn", [("Review", "primary"), ("Edit", "outline")])
+    rows = [[("person", n, c), e, p, j, x, l, ("b", s), review if s == "pending" else acts]
+            for n, c, e, p, j, x, l, s in data]
     cols = [("Member", 180), ("Email", 230), ("Plan", 90), ("Joined", 110), ("Expires", 110), ("Loans", 70),
             ("Status", 110), ("Action", 176)]
     return svg("17-Members", list_page("Members", "Members", "Membership / Members", cols, rows,
@@ -1061,7 +1084,7 @@ def screen_return_modal():
 
 def screen_reservations():
     rows = [
-        [("person", "Keo Vanna", "M-0245"), ("strong", "Introduction to Algorithms"), "18 Nov 2026", "#1", ("person", "26 Nov 2026", "notified 23 Nov"), ("b", "pending"), ("btn", [("Fulfil", "primary"), ("Cancel", "outline_danger")])],
+        [("person", "Keo Vanna", "M-0245"), ("strong", "Introduction to Algorithms"), "18 Nov 2026", "#1", ("person", "26 Nov 2026", "notified 23 Nov"), ("b", "pending"), ("btn", [("Hold copy", "primary"), ("Cancel", "outline_danger")])],
         [("person", "Sok Dara", "M-0021"), ("strong", "Introduction to Algorithms"), "20 Nov 2026", "#2", ("muted", "waiting"), ("b", "pending"), ("btn", [("Cancel", "outline_danger")])],
         [("person", "Chan Lina", "M-0108"), ("strong", "Sapiens"), "21 Nov 2026", "#1", ("muted", "waiting"), ("b", "pending"), ("btn", [("Cancel", "outline_danger")])],
         [("person", "Lim Sopheak", "M-0310"), ("strong", "Clean Code"), "08 Nov 2026", "—", ("muted", "picked up 12 Nov"), ("b", "fulfilled"), ("muted", "—")],
@@ -1072,7 +1095,7 @@ def screen_reservations():
     cols = [("Member", 180), ("Book", 250), ("Reserved", 120), ("Queue", 70), ("Hold expires", 150), ("Status", 116), ("Action", 190)]
     return svg("24-Reservations", list_page(
         "Reservations", "Reservations", "Circulation / Reservations", cols, rows, "Member or title…", "340", "34",
-        actions=[("+ New reservation", "primary", None)], filters=[("Book", "All books")],
+        filters=[("Book", "All books")],
         tabs=[("All", "340"), ("Pending", "14"), ("Fulfilled", "286"), ("Cancelled", "31"), ("Expired", "9")],
         row_h=56, id_="Reservations DataTable"))
 
@@ -1153,45 +1176,216 @@ def screen_reports():
 
 
 def screen_users():
+    edit = ("btn", [("Edit", "primary"), ("Delete", "outline_danger")])
     rows = [
-        [("avatar", "System Admin", "IT office"), "admin@biu.edu", ("b", "admin"), ("b", "active"), "23 Nov 2026, 08:02", ("check", True), ("btn", [("Edit", "primary")])],
-        [("avatar", "Chan Sophea", "Circulation librarian"), "sophea.chan@biu.edu", ("b", "librarian"), ("b", "active"), "23 Nov 2026, 07:55", ("check", True), ("btn", [("Edit", "primary"), ("Disable", "outline_danger")])],
-        [("avatar", "Vichea Long", "Cataloguer"), "vichea.long@biu.edu", ("b", "librarian"), ("b", "active"), "22 Nov 2026, 16:40", ("check", True), ("btn", [("Edit", "primary"), ("Disable", "outline_danger")])],
-        [("avatar", "Sok Dara", "Member M-0021"), "sok.dara@student.biu.edu", ("b", "member"), ("b", "active"), "21 Nov 2026, 19:12", ("check", True), ("btn", [("Edit", "primary"), ("Disable", "outline_danger")])],
-        [("avatar", "Ros Chantha", "Former librarian"), "chantha.ros@biu.edu", ("b", "librarian"), ("b", "inactive"), "02 Jun 2026, 11:03", ("check", True), ("btn", [("Restore", "outline")])],
-        [("avatar", "Pich Sreymom", "Member M-0412"), "sreymom.pich@biu.edu", ("b", "member"), ("b", "active"), ("muted", "never"), ("check", False), ("btn", [("Edit", "primary"), ("Resend", "outline")])],
+        [("avatar", "System Admin", "IT office"), "admin@biu.edu", ("link", "Administrator"), ("b", "active"), "23 Nov 2026, 08:02", ("btn", [("Edit", "primary")])],
+        [("avatar", "Chan Sophea", "Circulation librarian"), "sophea.chan@biu.edu", ("link", "Librarian"), ("b", "active"), "23 Nov 2026, 07:55", edit],
+        [("avatar", "Vichea Long", "Cataloguer"), "vichea.long@biu.edu", ("link", "Cataloguer"), ("b", "active"), "22 Nov 2026, 16:40", edit],
+        [("avatar", "Ly Sokunthea", "Student helper"), "sokunthea.ly@biu.edu", ("link", "Returns assistant"), ("b", "active"), "21 Nov 2026, 19:12", edit],
+        [("avatar", "Ros Chantha", "Former librarian"), "chantha.ros@biu.edu", ("link", "Librarian"), ("b", "terminated"), "02 Jun 2026, 11:03", edit],
     ]
-    cols = [("Name", 220), ("Email", 220), ("Role", 110), ("Status", 100), ("Last login", 160), ("Verified", 80), ("Action", 186)]
-    return svg("26-Users", list_page("Users", "Users", "Administration / Users", cols, rows, "Search name or email…",
-                                     "2,331", "234", actions=[("+ Add user", "primary", None)],
+    cols = [("Name", 240), ("Email", 230), ("Role", 160), ("Status", 120), ("Last login", 170), ("Action", 156)]
+    return svg("26-Users", list_page("Staff Accounts", "Staff Accounts", "Administration / Staff Accounts", cols, rows,
+                                     "Search name or email…", "12", "2", actions=[("+ Add staff", "primary", None)],
                                      filters=[("Role", "All roles"), ("Status", "All statuses")], user="Hi, Admin",
-                                     row_h=58, id_="Users DataTable"))
+                                     row_h=58, id_="Staff DataTable"))
 
 
 def screen_user_form():
-    rows = [[("f", "Full name", "Chan Sophea"), ("f", "Email", "sophea.chan@biu.edu")],
-            [("s", "Role", "Librarian"), ("s", "Status", "Active")],
+    rows = [[("f", "First name", "Sophea"), ("f", "Last name", "Chan")],
+            [("f", "Email", "sophea.chan@biu.edu"), ("f", "Phone", "015 222 333")],
+            [("f", "Position", "Circulation librarian"), ("s", "Role", "Librarian")],
+            [("s", "Status", "Active", "filled", "Terminated staff cannot sign in.")],
             [("f", "Password", "••••••••••", "filled", "At least 8 characters."),
-             ("f", "Confirm password", "••••••••", "error", "The passwords do not match.")],
-            [("f", "Position", "Circulation librarian"), ("f", "Phone", "015 222 333")],
-            [("check", "Email an invite link instead of setting a password", False)]]
+             ("f", "Confirm password", "••••••••", "error", "The passwords do not match.")]]
 
     def side(x, y, w):
-        perms = [("Catalog", 1, 1, 0), ("Members & plans", 1, 1, 0), ("Circulation", 1, 1, 0), ("Reports", 1, 1, 0),
-                 ("Users", 1, 0, 0), ("Audit log", 1, 0, 0), ("Member portal", 0, 0, 1)]
-        cols_x = [x + w - 196, x + w - 128, x + w - 60]
-        items = [text(x + 24, y + 36, "Role permissions", 16, 600)]
-        for cxx, lab in zip(cols_x, ["Admin", "Librarian", "Member"]):
-            items.append(text(cxx + 9, y + 70, lab, 12, 600, C["primary"] if lab == "Librarian" else C["muted"], anchor="middle"))
-        items.append(rect(cols_x[1] - 22, y + 52, 62, 30 + len(perms) * 36, C["primary"], rx=6, opacity=0.06))
-        for i, p in enumerate(perms):
-            yy = y + 84 + i * 36
-            items += [line(x + 24, yy, x + w - 24, yy), text(x + 24, yy + 23, p[0], 13)]
-            for cxx, on in zip(cols_x, p[1:]):
-                items.append(icon("check" if on else "x", cxx, yy + 9, 18, C["success"] if on else C["border"]))
-        return card(x, y, w, 84 + len(perms) * 36 + 24, "Role permissions", items)
-    return svg("27-User-Form", form_page("Users", "Add User", "Administration / Users / Add", "Account details",
-                                         rows, side=side, save="Create user", user="Hi, Admin"))
+        areas = [("Books, copies, authors", "Full"), ("Publishers, categories", "Full"), ("Members and plans", "Full"),
+                 ("Borrow desk", "Full"), ("Reservations", "Full"), ("Administration", "None")]
+        return card(x, y, w, 330, "Role access", [
+            text(x + 24, y + 36, "What Librarian can do", 16, 600),
+            kv_rows(x + 24, y + 52, w - 48, areas),
+            text(x + 24, y + 290, "You can only give a role that has", 12, 400, C["muted"]),
+            text(x + 24, y + 308, "no more access than your own.", 12, 400, C["muted"])])
+    return svg("27-User-Form", form_page("Staff Accounts", "Add Staff Account", "Administration / Staff Accounts / Add",
+                                         "Account details", rows, side=side, save="Create account", user="Hi, Admin"))
+
+
+def screen_roles():
+    edit = ("btn", [("Edit", "primary"), ("Delete", "outline_danger")])
+    rows = [
+        [("strong", "Administrator"), "Full access to everything.", ("b", "Full access"), "1", ("muted", "Built in")],
+        [("strong", "Librarian"), "Catalogue, members and the borrow desk.", "34 permissions", "6", edit],
+        [("strong", "Cataloguer"), "Keeps books, authors and publishers up to date.", "20 permissions", "3", edit],
+        [("strong", "Returns assistant"), "Part-time helper at the returns desk.", "1 permission", "2", edit],
+    ]
+    cols = [("Role", 200), ("Description", 400), ("Access", 190), ("Staff", 110), ("Action", 176)]
+    return svg("34-Roles", list_page("Roles & Permissions", "Roles", "Administration / Roles & Permissions", cols, rows, "Search roles…", "4", "1",
+                                     actions=[("+ Add role", "primary", None)], user="Hi, Admin", row_h=56,
+                                     id_="Roles DataTable"))
+
+
+def tick(x, y, on):
+    parts = [rect(x, y, 16, 16, C["primary"] if on else C["card"], rx=3,
+                  stroke=None if on else C["border"], sw=None if on else 1.5)]
+    if on:
+        parts.append(icon("check", x + 2, y + 2, 12, C["white"]))
+    return "".join(parts)
+
+
+def screen_role_form():
+    crud = ["View", "Add", "Edit", "Delete"]
+    yes, no, view = (1, 1, 1, 1), (0, 0, 0, 0), (1, 0, 0, 0)
+
+    def grp(title, noun, flags, *more, is_open=True):
+        return title, [(f"{v} {noun}", f) for v, f in zip(crud, flags)] + list(more), is_open
+    cols = [[grp("Authors", "authors", yes), grp("Books", "books", yes, is_open=False),
+             ("Borrow desk", [("View loans", 1), ("Lend books", 0), ("Receive returns", 0)], True),
+             grp("Staff accounts", "staff accounts", no, is_open=False)],
+            [grp("Book copies", "book copies", yes), grp("Categories", "categories", yes, is_open=False),
+             grp("Members", "members", view, ("Approve registrations", 0)), grp("Roles", "roles", no, is_open=False)],
+            [grp("Member plans", "member plans", view), grp("Publishers", "publishers", yes, is_open=False),
+             ("Reservations", [("View reservations", 1), ("Manage reservations", 0)], True)]]
+    body = [sidebar("Roles & Permissions"), navbar("Hi, Admin"),
+            page_title("Update Role", "Administration / Roles & Permissions / Edit")]
+    cy = 148
+    inner = [text(CX + 24, cy + 32, "Role and permissions", 16, 600), line(CX, cy + 50, CX + CW, cy + 50)]
+    parts, y = form_grid(CX + 24, cy + 62, CW - 48, [[("f", "Role name", "Cataloguer"),
+                                                      ("f", "Description", "Keeps books, authors and publishers up to date.")]])
+    inner += parts + [text(CX + 24, y + 6, "Permissions", 13, 600),
+                      text(CX + 112, y + 6, "Tick what people with this role may do. You can only give access that you have yourself.", 12, 400, C["muted"])]
+    ticked = sum(f for col in cols for _, items, _ in col for _, f in items)
+    total = sum(len(items) for col in cols for _, items, _ in col)
+    inner += [g("Select all", rect(CX + 24, y + 26, 16, 16, C["primary"], rx=3), rect(CX + 28, y + 33, 8, 2, C["white"]),
+                text(CX + 50, y + 39, "Select all permissions", 13, 600)),
+              text(CX + 210, y + 39, f"{ticked} of {total} selected", 13, 400, C["muted"])]
+    bx = CX + CW - 24
+    for lab in ["Collapse all", "Expand all"]:
+        bw = small_btn(0, 0, lab, "outline")[1]
+        bx -= bw
+        inner.append(small_btn(bx, y + 20, lab, "outline")[0])
+        bx -= 8
+    gap = 16
+    gw = (CW - 48 - 2 * gap) / 3
+    bottom = 0
+    for ci, col in enumerate(cols):
+        gx, gy = round(CX + 24 + ci * (gw + gap)), y + 68
+        for title, items, is_open in col:
+            n = sum(f for _, f in items)
+            gh = 30 + 24 * (len(items) + 1) if is_open else 26
+            cw_ = round(tw(title, 13, 600) + tw(f"{n}/{len(items)}", 12) + 44)
+            cxv, cyv = gx + 20, gy
+            arrow = icon("chevron", cxv, cyv - 6, 12, C["text"])
+            if not is_open:
+                arrow = f'<g transform="rotate(-90 {cxv + 6} {cyv})">{arrow}</g>'
+            el = [rect(gx, gy, round(gw), gh, C["card"], rx=6, stroke=C["border"], sw=1),
+                  rect(gx + 14, gy - 9, cw_, 18, C["card"]), arrow,
+                  text(gx + 38, gy + 5, title, 13, 600),
+                  text(gx + 44 + round(tw(title, 13, 600)), gy + 5, f"{n}/{len(items)}", 12, 400, C["muted"])]
+            if is_open:
+                el += [tick(gx + 16, gy + 20, n == len(items)), text(gx + 42, gy + 33, "Select all", 13, 400, C["muted"])]
+                if 0 < n < len(items):
+                    el += [rect(gx + 16, gy + 20, 16, 16, C["primary"], rx=3), rect(gx + 20, gy + 27, 8, 2, C["white"])]
+                for k, (lab, f) in enumerate(items):
+                    el += [tick(gx + 16, gy + 44 + k * 24, f), text(gx + 42, gy + 57 + k * 24, lab, 13)]
+            inner.append(g(f"Group/{title}{'' if is_open else ' (collapsed)'}", *el))
+            gy += gh + 24
+        bottom = max(bottom, gy)
+    el, bw = button(CX + 24, bottom, "Save role")
+    inner += [el, button(CX + 36 + bw, bottom, "Cancel", "outline")[0]]
+    body.append(card(CX, cy, CW, bottom + 52 - cy, "Form card", inner))
+    h = max(H, bottom + 80)
+    doc = "".join(body).replace(rect(0, 0, SIDE, H, C["sidebar"]), rect(0, 0, SIDE, h, C["sidebar"]), 1)
+    return svg("35-Role-Form", doc, h=h)
+
+
+def screen_review_registration():
+    body = [sidebar("Members"), navbar("Hi, Librarian"), page_title("Review Registration", "Membership / Members / Review")]
+    cy, lw = 156, 430
+    body.append(card(CX, cy, lw, 290, "Submitted card", [
+        text(CX + 24, cy + 36, "Submitted by the member", 16, 600),
+        kv_rows(CX + 24, cy + 52, lw - 48, [("Code", "M-0412"), ("Name", "Pich Sreymom"), ("Email", "sreymom.pich@student.biu.edu"),
+                                            ("Phone", "098 111 222"), ("Address", "Battambang"), ("Registered", "23 Nov 2026, 09:14")])]))
+    body.append(g("Alert/warning", rect(CX, cy + 306, lw, 64, C["warning"], rx=6, opacity=0.14),
+                  text(CX + 16, cy + 333, "Check the person's ID before approving.", 13, 600, C["warning_t"]),
+                  text(CX + 16, cy + 353, "The email was typed by the member, not verified.", 13, 400, C["warning_t"])))
+    rx, rw = CX + lw + 16, CW - lw - 16
+    parts, y = form_grid(rx + 24, cy + 72, rw - 48, [
+        [("s", "Existing card with the same email", "Do not link, make this a new membership", "filled",
+          "Linking gives this login the loans and history of that card.")],
+        [("s", "Plan", "Student · 14 days"), ("d", "Expiry date", "23 Nov 2027")]])
+    el, bw = button(rx + 24, y + 16, "Approve")
+    el2, bw2 = button(rx + 36 + bw, y + 16, "Reject", "danger")
+    body.append(card(rx, cy, rw, y + 72 - cy, "Decision card", [
+        text(rx + 24, cy + 36, "Decision", 16, 600), line(rx, cy + 56, rx + rw, cy + 56), *parts,
+        line(rx, y, rx + rw, y), el, el2, button(rx + 48 + bw + bw2, y + 16, "Back", "outline")[0]]))
+    return svg("38-Review-Registration", "".join(body))
+
+
+def portal_page(active, title, sub, action=None):
+    x0, cw = 120, W - 240
+    body = [portal_nav(active), g("Header", text(x0, 118, title, 24, 700), text(x0, 142, sub, 13, 400, C["muted"]))]
+    if action:
+        body.append(button(x0 + cw - btn_w(action), 100, action)[0])
+    return body, x0, cw
+
+
+def portal_table(x0, y, cw, title, cols, rows):
+    tb, end = table(x0 + 20, y + 50, cw - 40, cols, rows, row_h=52, id_=f"{title} table")
+    return card(x0, y, cw, end - y + 20, title, [text(x0 + 20, y + 32, title, 16, 600), tb]), end + 40
+
+
+def screen_portal_book():
+    body, x0, cw = portal_page("Catalog", "Introduction to Algorithms", "Thomas H. Cormen")
+    y = 170
+    facts = [("Category", "Computing"), ("Publisher", "MIT Press"), ("Year", "2022"), ("Pages", "1,312"), ("Language", "English"),
+             ("ISBN", "9780262046305"), ("Shelf", "A-14"), ("Copies", "0 of 2 available")]
+    el = [rect(x0 + 20, y + 20, 240, 320, C["subtle"], rx=8), cover(x0 + 60, y + 60, 160, 220, 1)]
+    for i, (k, v) in enumerate(facts):
+        fx, fy = x0 + 300 + (i % 2) * 400, y + 50 + (i // 2) * 60
+        el += [text(fx, fy, k, 13, 500, C["muted"]), text(fx, fy + 22, v, 14, 600)]
+    el += [button(x0 + 300, y + 290, "Reserve")[0],
+           text(x0 + 410, y + 313, "All copies are out. You join the queue and we hold the next one for you.", 13, 400, C["muted"])]
+    body.append(card(x0, y, cw, 360, "Book card", el))
+    return svg("39-Member-Book", "".join(body))
+
+
+def screen_portal_loans():
+    body, x0, cw = portal_page("My loans", "My Loans", "Bring books back to the library desk. Staff confirm the return.")
+    cols = [("Book", 420), ("Barcode", 180), ("Borrowed", 180), ("Due", 180), ("Status", 200)]
+    c1, y = portal_table(x0, 170, cw, "On loan now", cols, [
+        [("strong", "Clean Code"), "BIU-00001", "27 Oct 2026", ("red", "10 Nov 2026"), ("b", "overdue")],
+        [("strong", "Database System Concepts"), "BIU-00004", "23 Nov 2026", "07 Dec 2026", ("b", "borrowed")]])
+    c2, _ = portal_table(x0, y, cw, "History", cols, [
+        [("strong", "A History of Cambodia"), "BIU-00007", "15 Sep 2026", "29 Sep 2026", ("b", "returned")]])
+    return svg("40-Member-Loans", "".join(body + [c1, c2]))
+
+
+def screen_portal_reservations():
+    body, x0, cw = portal_page("Reservations", "Reservations", "When a book is ready, collect it at the desk before the hold ends.",
+                               "Find a book")
+    cols = [("Book", 400), ("Reserved", 180), ("Status", 200), ("Collect before", 220), ("", 160)]
+    cancel = ("btn", [("Cancel", "outline_danger")])
+    c1, y = portal_table(x0, 170, cw, "Open", cols, [
+        [("strong", "Introduction to Algorithms"), "21 Nov 2026", ("b", "Ready to collect"), "26 Nov 2026, 09:30", cancel],
+        [("strong", "Sapiens"), "23 Nov 2026", ("b", "pending"), "—", cancel]])
+    c2, _ = portal_table(x0, y, cw, "Closed", cols, [
+        [("strong", "Refactoring"), "02 Nov 2026", ("b", "Collected"), "—", ("muted", "")]])
+    return svg("41-Member-Reservations", "".join(body + [c1, c2]))
+
+
+def screen_portal_profile():
+    body, x0, cw = portal_page("Profile", "Profile", "Member M-0021 · Active")
+    p1, y1 = form_grid(x0 + 20, 220, cw - 40, [[("f", "Name", "Sok Dara"),
+                                                ("f", "Email", "sok.dara@student.biu.edu", "placeholder", "Ask the library desk to change your email.")],
+                                               [("f", "Phone", "012 345 678"), ("f", "Address", "Phnom Penh")]])
+    body.append(card(x0, 166, cw, y1 - 166, "Details card", [text(x0 + 20, 200, "Your details", 16, 600), *p1]))
+    y = y1 + 20
+    p2, y2 = form_grid(x0 + 20, y + 54, cw - 40, [[("f", "Current password", "••••••••")],
+                                                  [("f", "New password", ""), ("f", "Confirm new password", "")]])
+    body.append(card(x0, y, cw, y2 - y, "Password card", [text(x0 + 20, y + 34, "Change password", 16, 600), *p2]))
+    body.append(button(x0, y2 + 20, "Save changes")[0])
+    return svg("42-Member-Profile", "".join(body))
 
 
 def screen_audit():
@@ -1241,7 +1435,7 @@ def screen_audit():
 def portal_nav(active):
     parts = [rect(0, 0, W, 64, C["card"]), line(0, 64, W, 64), logo(32, 14, dark=False)]
     tx = 260
-    for lab in ["My loans", "Reservations", "Catalog"]:
+    for lab in ["Home", "Catalog", "My loans", "Reservations", "Profile"]:
         on = lab == active
         parts.append(text(tx, 38, lab, 14, 600 if on else 500, C["primary"] if on else C["muted"]))
         if on:
@@ -1255,7 +1449,7 @@ def portal_nav(active):
 
 
 def portal_body():
-    body = [portal_nav("My loans")]
+    body = [portal_nav("Home")]
     x0, cw = 120, W - 240
     body.append(g("Welcome", text(x0, 118, "Welcome back, Dara", 24, 700),
                   text(x0, 142, "Member M-0021 · Student plan · membership expires 31 Aug 2027", 13, 400, C["muted"])))
@@ -1301,7 +1495,7 @@ def screen_catalog():
     body = [portal_nav("Catalog")]
     x0, cw = 120, W - 240
     body.append(g("Header", text(x0, 118, "Catalog", 24, 700),
-                  text(x0, 142, "1,284 titles · reserve a title when no copy is on the shelf", 13, 400, C["muted"])))
+                  text(x0, 142, "1,284 titles · reserve a title and collect it at the desk", 13, 400, C["muted"])))
     body.append(g("Search", rect(x0, 164, cw - 236, 44, C["card"], rx=22, stroke=C["border"], sw=1),
                   icon("search", x0 + 18, 176, 20, C["muted"]),
                   text(x0 + 50, 192, "Search by title, author or ISBN", 15, 400, C["muted"]),
@@ -1450,7 +1644,8 @@ SCREENS = [style_guide, screen_login, screen_dashboard, screen_books, None, scre
            screen_categories, screen_category_form, screen_members, screen_member_form, screen_member_profile,
            screen_plans, screen_plan_form, screen_loans, screen_return_modal, screen_reservations,
            screen_reports, screen_users, screen_user_form, screen_audit, screen_catalog, screen_review_modal,
-           screen_dashboard_dark, screen_404]
+           screen_dashboard_dark, screen_404, screen_register, screen_roles, screen_role_form, screen_review_registration, screen_portal_book, screen_portal_loans,
+           screen_portal_reservations, screen_portal_profile]
 
 
 def screen_borrow():

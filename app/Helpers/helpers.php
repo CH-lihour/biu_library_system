@@ -14,6 +14,14 @@ if (! function_exists('status_label')) {
             'maintenance' => '<span class="badge bg-secondary">Maintenance</span>',
             'damaged' => '<span class="badge bg-danger">Damaged</span>',
             'lost' => '<span class="badge bg-dark">Lost</span>',
+            'returned' => '<span class="badge bg-success">Returned</span>',
+            'overdue' => '<span class="badge bg-danger">Overdue</span>',
+            'ready' => '<span class="badge bg-success">Ready to collect</span>',
+            'fulfilled' => '<span class="badge bg-primary">Collected</span>',
+            'cancelled' => '<span class="badge bg-secondary">Cancelled</span>',
+            'expired' => '<span class="badge bg-danger">Expired</span>',
+            'on_leave' => '<span class="badge bg-warning">On leave</span>',
+            'terminated' => '<span class="badge bg-danger">Terminated</span>',
         ];
 
         return $badges[$status] ?? '<span class="badge bg-secondary">Unknown</span>';
@@ -103,9 +111,41 @@ if(! function_exists('format_decimal')) {
     }
 }
 
-if(! function_exists(('edit_button'))) {
-    function edit_button(string $url): string
+if(! function_exists('can_access')) {
+    /** Whether the signed-in user may open a named admin route. */
+    function can_access(string ...$routes): bool
     {
+        foreach ($routes as $route) {
+            if (auth()->user()?->canAccess($route)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+if(! function_exists('can_access_all')) {
+    /** Whether the signed-in user may open every one of these admin routes. */
+    function can_access_all(array $routes): bool
+    {
+        foreach ($routes as $route) {
+            if (! can_access($route)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+if(! function_exists(('edit_button'))) {
+    function edit_button(string $url, ?string $route = null): string
+    {
+        if ($route && ! can_access($route)) {
+            return '';
+        }
+
         return "<a href='$url' class='btn btn-sm btn-warning'>
                     <i class='fa fa-edit'></i>
                 </a>";
@@ -113,8 +153,12 @@ if(! function_exists(('edit_button'))) {
 }
 
 if(! function_exists('delete_button')) {
-    function delete_button(string $url): string
+    function delete_button(string $url, ?string $route = null): string
     {
+        if ($route && ! can_access($route)) {
+            return '';
+        }
+
         return "<form action='$url' method='POST' style='display:inline-block;' onsubmit='return confirm(\"Are you sure you want to delete this item?\")'>
                     " . csrf_field() . method_field('DELETE') . "
                     <button type='submit' class='btn btn-sm btn-danger js-delete-btn'>
