@@ -46,11 +46,5 @@ if [ ! -e public/storage ]; then
     php artisan storage:link
 fi
 
-echo "[start] Building frontend assets"
-if [ ! -d node_modules ]; then
-    npm install --no-audit --no-fund
-fi
-npm run build
-
 echo "[start] Starting Laravel on port 8000 (published as APP_PORT on the host)"
 exec php -d variables_order=EGPCS artisan serve --host=0.0.0.0 --port=8000

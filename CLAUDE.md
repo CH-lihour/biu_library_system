@@ -9,15 +9,11 @@ BIU Library Management System — a Laravel 12 (PHP 8.2+) web application for ma
 ## Commands
 
 ```bash
-# First-time setup (install deps, copy .env, key:generate, migrate, npm build)
+# First-time setup (install deps, copy .env, key:generate, migrate)
 composer setup
 
-# Run the full dev stack (php serve + queue listener + pail logs + vite) concurrently
+# Run the dev server (php artisan serve)
 composer dev
-
-# Frontend asset dev/build
-npm run dev
-npm run build
 
 # Tests (clears config first, then runs the suite)
 composer test
@@ -34,7 +30,7 @@ php artisan migrate
 php artisan migrate:fresh --seed
 ```
 
-The SQLite database file lives at `database/database.sqlite`. Docker support exists via `compose.yaml` / `docker/` and `laravel/sail`.
+The SQLite database file lives at `database/database.sqlite`. Docker support exists via `compose.yaml` / `docker/` (app + MySQL).
 
 ## Architecture
 
@@ -70,7 +66,7 @@ Key conventions:
 
 ## Global Helpers
 
-[app/Helpers/helpers.php](app/Helpers/helpers.php) is autoloaded via `composer.json` `files`. It provides view/DataTable helpers used throughout Blade and DataTable classes: `status_label()`, `status_badge()`, `format_date()`, `format_date_time()`, `format_time()`, `format_currency()`, `format_number()`, `format_decimal()`, `book_preview()`, `image_preview()`, `edit_button()`, `delete_button()`. These emit Bootstrap + FontAwesome markup — the Blade UI is a Bootstrap admin theme (assets under `public/assets/`), even though Vite is configured with Tailwind.
+[app/Helpers/helpers.php](app/Helpers/helpers.php) is autoloaded via `composer.json` `files`. It provides view/DataTable helpers used throughout Blade and DataTable classes: `status_label()`, `status_badge()`, `format_date()`, `format_date_time()`, `format_time()`, `format_currency()`, `format_number()`, `format_decimal()`, `book_preview()`, `image_preview()`, `edit_button()`, `delete_button()`. These emit Bootstrap + FontAwesome markup — the Blade UI is a Bootstrap admin theme (plain files under `public/assets/`; there is no npm or Vite build step).
 
 ## Models & Domain
 

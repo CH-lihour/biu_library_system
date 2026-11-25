@@ -152,7 +152,7 @@ Priority uses MoSCoW: **M**ust, **S**hould, **C**ould, **W**on't (this release).
 | NFR-04 | Usability | Bootstrap admin UI, responsive to 360 px, light and dark themes, WCAG 2.1 AA contrast. |
 | NFR-05 | Availability | 99.5 % during library opening hours; nightly DB backup with 30-day retention. |
 | NFR-06 | Maintainability | Layered architecture (Controller → FormRequest → Service → Repository interface → Model); Pint-clean; ≥ 70 % feature-test coverage of services. |
-| NFR-07 | Portability | Runs on SQLite (dev) and MySQL 8 (prod); Docker/Sail compose provided. |
+| NFR-07 | Portability | Runs on SQLite (dev) and MySQL 8 (prod); Docker compose provided. |
 | NFR-08 | Auditability | All staff data changes traceable via audit log (FR-AUD-01). |
 
 ## 6. Business Rules
